@@ -1,0 +1,115 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 3</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 4000,
+        height: 600,
+        physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 1000 },
+            debug: false
+        }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+    
+    var platforms;
+    var cursors;
+    var game = new Phaser.Game(config);
+
+    function preload ()
+    {
+        this.load.image('sky', 'assets/sky.png');
+        this.load.image('ground', 'assets/ground.png');
+        this.load.image('defaultBrick', 'assets/brick.png');
+        this.load.image('itemBrick', 'assets/itemBlock.png');
+        this.load.image('penguin', 'assets/penguin.png');
+        this.load.spritesheet('player', 'assets/dude.png',{ frameWidth: 32, frameHeight: 48 });
+    }
+
+    function create ()
+    {
+        platforms = this.physics.add.staticGroup();
+        penguin = this.physics.add.staticGroup();
+
+        for(let i = 0; i<10 ;i++){
+            this.add.image(i*400, 400, 'sky');
+            this.add.image(i*400, 50, 'sky');
+        };
+
+        for(let i = 0; i<134 ;i++){
+            platforms.create(i*30, 585, 'ground').setScale(0.2).refreshBody();
+        };
+
+        platforms.create(1000, 450, 'defaultBrick').setScale(0.2).refreshBody();
+        platforms.create(1030, 450, 'itemBrick').setScale(0.2).refreshBody();
+        platforms.create(1060, 450, 'defaultBrick').setScale(0.2).refreshBody();
+        platforms.create(1090, 450, 'itemBrick').setScale(0.2).refreshBody();
+        platforms.create(1120, 450, 'defaultBrick').setScale(0.2).refreshBody();
+
+
+        platforms.create(1300, 400, 'defaultBrick').setScale(0.2).refreshBody();
+        platforms.create(1330, 400, 'itemBrick').setScale(0.21).refreshBody();
+        platforms.create(1360, 400, 'defaultBrick').setScale(0.2).refreshBody();
+        platforms.create(1390, 400, 'defaultBrick').setScale(0.2).refreshBody();
+        platforms.create(1420, 400, 'itemBrick').setScale(0.21).refreshBody();
+        platforms.create(1450, 400, 'defaultBrick').setScale(0.2).refreshBody();
+        
+        player = this.physics.add.sprite(100, 500, 'player').setScale(1);
+
+        penguin = this.physics.add.sprite(2000, 500, 'penguin').setScale(0.06);
+        this.physics.add.collider(penguin, platforms);
+        this.physics.add.collider(player, platforms);
+        this.physics.add.collider(penguin, player);
+        penguin.setVelocityX(-160);
+        cursors = this.input.keyboard.createCursorKeys();
+
+    }
+
+    function update ()
+    {
+        if (cursors.left.isDown)
+    {
+        player.setVelocityX(-160);
+
+    }
+    else if (cursors.right.isDown)
+    {
+        player.setVelocityX(160);
+
+    }
+    else
+    {
+        player.setVelocityX(0);
+
+    }
+
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.setVelocityY(-550);
+    }
+    }
+
+</script>
+
+</body>
+</html>
