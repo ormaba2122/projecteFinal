@@ -21,7 +21,7 @@
         physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 1000 },
+            gravity: { y: 1100 },
             debug: false
         }
         },
@@ -33,7 +33,12 @@
     };
     
     var platforms;
+    var tuberia;
     var cursors;
+    var toque =true;
+    var crebote =true;
+    var timedEvent;
+    var partida;
     var game = new Phaser.Game(config);
 
     function preload ()
@@ -42,19 +47,28 @@
         this.load.image('ground', 'assets/ground.png');
         this.load.image('defaultBrick', 'assets/brick.png');
         this.load.image('itemBrick', 'assets/itemBlock.png');
-        this.load.image('penguin', 'assets/penguin.png');
-        this.load.spritesheet('player', 'assets/dude.png',{ frameWidth: 32, frameHeight: 48 });
+        this.load.image('caparazon', 'assets/caparazon.png');
+        this.load.spritesheet('koopa', 'assets/koopa.png',{ frameWidth: 100, frameHeight: 140 });
+        this.load.image('tuberia', 'assets/tuberia.png');
+        this.load.spritesheet('goomba', 'assets/goomba.png',{ frameWidth: 200, frameHeight: 160 });
+        this.load.spritesheet('player', 'assets/mariosprite.png',{ frameWidth:64.185, frameHeight: 100 });
     }
 
     function create ()
-    {
+    {   
+        partida=1;
         platforms = this.physics.add.staticGroup();
-        penguin = this.physics.add.staticGroup();
+        tuberia = this.physics.add.staticGroup();
+        caparazones = this.physics.add.group();
 
+        
         for(let i = 0; i<10 ;i++){
             this.add.image(i*400, 400, 'sky');
             this.add.image(i*400, 50, 'sky');
         };
+        tuberia.create(1800, 550, 'tuberia').setScale(0.3).refreshBody();
+        tuberia.create(2030, 470, 'tuberia').setScale(0.3).refreshBody();
+        tuberia.create(2400, 550, 'tuberia').setScale(0.3).refreshBody();
 
         for(let i = 0; i<134 ;i++){
             platforms.create(i*30, 585, 'ground').setScale(0.2).refreshBody();
@@ -74,15 +88,66 @@
         platforms.create(1420, 400, 'itemBrick').setScale(0.21).refreshBody();
         platforms.create(1450, 400, 'defaultBrick').setScale(0.2).refreshBody();
         
-        player = this.physics.add.sprite(100, 500, 'player').setScale(1);
 
-        penguin = this.physics.add.sprite(2000, 500, 'penguin').setScale(0.06);
-        this.physics.add.collider(penguin, platforms);
+        player = this.physics.add.sprite(200, 500, 'player').setScale(0.7);
+        koopa1 = this.physics.add.sprite(3000, 500, 'koopa').setScale(0.5);
+        goomba2 = this.physics.add.sprite(2200, 350, 'goomba').setScale(0.22);
+        goomba1 = this.physics.add.sprite(1850, 350, 'goomba').setScale(0.22);
+        this.physics.add.collider(goomba1, platforms);
+        this.physics.add.collider(goomba2, platforms);
+        this.physics.add.collider(koopa1, platforms);
         this.physics.add.collider(player, platforms);
-        this.physics.add.collider(penguin, player);
-        penguin.setVelocityX(-160);
+        this.physics.add.collider(player, tuberia);
+        this.physics.add.collider(koopa1, player, muerte,null,this);
+        this.physics.add.collider(caparazones, player, muerte,null,this);
+        this.physics.add.collider(goomba1, player, muerte,null,this);
+        this.physics.add.collider(goomba2, player, muerte, null, this);
+        this.physics.add.collider(goomba1, tuberia);
+        this.physics.add.collider(goomba2, tuberia, rebote, null, this);
+        this.physics.add.collider(caparazones, platforms);
+        this.physics.add.collider(caparazones, tuberia, Cdestruccion, null, this);
+        goomba1.setVelocityX(-160);
+        goomba2.setVelocityX(160);
         cursors = this.input.keyboard.createCursorKeys();
 
+
+            this.time.delayedCall(2500, goombasalta, [], this);
+         tiracaparazon();
+        
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
+        frameRate: 10,
+        repeat: 0
+    });
+    this.anims.create({
+        key: 'goomba',
+        frames: this.anims.generateFrameNumbers('goomba', { start: 0, end: 1 }),
+        frameRate: 4,
+        repeat: -1
+    });
+    goomba1.anims.play('goomba');
+    goomba2.anims.play('goomba');
+
+    this.anims.create({
+        key: 'koopa',
+        frames: [ { key: 'koopa', frame: 1 } ],
+        frameRate: 4,
+    });
+
+    this.anims.create({
+        key: 'turn',
+        frames: [ { key: 'player', frame: 6 } ],
+        frameRate: 10
+    });
+         player.anims.play('turn');
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
+        frameRate: 10,
+        //repeat: 1
+    });
     }
 
     function update ()
@@ -90,25 +155,63 @@
         if (cursors.left.isDown)
     {
         player.setVelocityX(-160);
+        player.anims.play('left', true);
+
 
     }
     else if (cursors.right.isDown)
     {
         player.setVelocityX(160);
+        player.anims.play('right', true);
 
     }
     else
     {
         player.setVelocityX(0);
+        player.anims.play('turn');
 
     }
 
     if (cursors.up.isDown && player.body.touching.down)
     {
-        player.setVelocityY(-550);
+        player.setVelocityY(-560);
     }
     }
 
+function rebote(goomba2,tuberia){
+    if(toque==true){
+    goomba2.setVelocityX(-160);}
+    else{goomba2.setVelocityX(160)}
+    toque=!toque;
+}
+function goombasalta(){
+    goomba1.setVelocityY(-400);
+    goomba2.setVelocityY(-400);
+
+    this.time.delayedCall(2500, goombasalta, [], this);
+
+}
+function Cdestruccion(){  
+caparazones.clear(true);
+
+tiracaparazon();
+
+}
+function tiracaparazon(){
+    koopa1.setVelocityY(-400);
+     caparazones.create(3000, 500, 'caparazon').setScale(0.5);
+     caparazones.setVelocityX(-250);
+     
+    }
+
+function muerte ()
+{
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    gameOver = true;
+}
 </script>
 
 </body>
