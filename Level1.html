@@ -213,7 +213,7 @@
             });
 
 
-            this.cameras.main.setBounds(0, 0, 4000, 620);
+            this.cameras.main.setBounds(0, 0, 4000, 600);
 
             this.cameras.main.startFollow(player);
             //this.cameras.main.setZoom(1);
@@ -337,8 +337,7 @@
             player.setVelocityY(-400);
               enemy.setTint(0xff0000);
               enemy.setVelocityX(0);
-              enemy.y=2000;
-              enemy.x=-1000;
+              enemy.setImmovable(true);
           }
           else{
             if (tamaño == "pequeño") {

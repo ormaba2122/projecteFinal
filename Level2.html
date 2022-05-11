@@ -43,6 +43,7 @@
         var tamaño = "grande";
         var timedEvent;
         var partida;
+        var direccion = "izquierda";
         var game = new Phaser.Game(config);
 
         function preload() {
@@ -54,13 +55,16 @@
             this.load.image('bloqueduro', 'assets/bloqueduro.png');
             this.load.image('cactus', 'assets/cactus.png');
             this.load.image('itemBrick', 'assets/itemBlock.png');
+            this.load.image('cadenas', 'assets/cadenas.png');
+            this.load.image('spike', 'assets/spike.png');
             this.load.image('goombaCabeza', 'assets/goomba_cabeza.png');
             this.load.spritesheet('bullet', 'assets/bulletbill.png', { frameWidth: 100, frameHeight: 50 });
+            this.load.spritesheet('planta', 'assets/plantapirana.png', { frameWidth: 100, frameHeight: 100 });
             this.load.image('platform', 'assets/platform.png');
             this.load.image('cannon', 'assets/cannon.png');
-            this.load.image('caparazon', 'assets/fireball.png');
+            this.load.image('fuego', 'assets/fireball.png');
             this.load.spritesheet('koopa', 'assets/koopa_fire.png', { frameWidth: 100, frameHeight: 140 });
-            this.load.image('tuberia', 'assets/tuberia.png');
+            this.load.image('tuberia', 'assets/tuberia_desierto.png');
             this.load.image('tuberiaTP', 'assets/tuberiaTP.png');
             this.load.spritesheet('goomba', 'assets/goomba_desert.png', { frameWidth: 200, frameHeight: 160 });
             this.load.spritesheet('player', 'assets/mariosprite.png', { frameWidth: 64.185, frameHeight: 100 });
@@ -77,8 +81,10 @@
             tuberia = this.physics.add.staticGroup();
             tp = this.physics.add.staticGroup();
             tp2 = this.physics.add.staticGroup();
+            spikes = this.physics.add.staticGroup();
 
-            caparazones = this.physics.add.group();
+
+            fuegos = this.physics.add.group();
             setas = this.physics.add.group();
             cannon = this.physics.add.staticGroup();
             setaDropper = this.physics.add.staticGroup();
@@ -109,11 +115,11 @@
             nubes.create(2000, 150, 'nube').setScale(1).refreshBody();
             nubes.create(3700, 250, 'nube').setScale(1).refreshBody();
             nubes.create(3000, 150, 'nube').setScale(1).refreshBody();
-            cactus.create(1800, 520, 'cactus').setScale(0.3).refreshBody();
+            cactus.create(1200, 520, 'cactus').setScale(0.3).refreshBody();
             cactus.create(2400, 520, 'cactus').setScale(0.3).refreshBody();
             tuberia.create(3700, 550, 'tuberia').setScale(0.3).refreshBody();
             
-            tuberia.create(1700, 550, 'tuberia').setScale(0.3).refreshBody();
+            tuberia.create(1750, 540, 'tuberia').setScale(0.3).refreshBody();
 
             tp.create(4000, 500, 'a').setScale(1.5).refreshBody();
 
@@ -127,8 +133,20 @@
             };
 
             for (let i = 0; i < 5; i++) {
+                this.add.image(i*100 +1910, 500, 'cadenas').setScale(0.7);
                 platforms.create(i*100 + 1900, 585, 'ground').setScale(0.2).refreshBody();
+                platforms.create(i*100 + 1900, 340, 'ground').setScale(0.2).refreshBody();
+
             };
+            spikes.create(1900, 560, 'spike').setScale(0.038).refreshBody();
+            spikes.create(2000, 315, 'spike').setScale(0.038).refreshBody();
+            spikes.create(2100, 560, 'spike').setScale(0.038).refreshBody();
+            spikes.create(2200, 315, 'spike').setScale(0.038).refreshBody();
+            spikes.create(2300, 560, 'spike').setScale(0.038).refreshBody();
+
+
+            
+
 
             for (let i = 0; i < 6; i++) {
                 tp2.create(i*100 + 1850, 720, 'a').setScale(1.5).refreshBody();
@@ -155,6 +173,9 @@
             platforms.create(1420, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1450, 400, 'defaultBrick').setScale(0.2).refreshBody();
 
+            
+
+
 
 
             
@@ -163,12 +184,13 @@
             };
 
 
-            player = this.physics.add.sprite(300, 500, 'player').setScale(0.7);
-            koopa1 = this.physics.add.sprite(3000, 500, 'koopa').setScale(0.5);
+            player = this.physics.add.sprite(200, 500, 'player').setScale(0.7);
+            koopa1 = this.physics.add.sprite(3000, 400, 'koopa').setScale(0.5);
+           // planta1 = this.physics.add.sprite(400, 300, 'planta').setScale(0.5);
             goomba2 = this.physics.add.sprite(1400, 350, 'goomba').setScale(0.22);
-            goomba1 = this.physics.add.sprite(3750, 350, 'goomba').setScale(0.22);
+            goomba1 = this.physics.add.sprite(1550, 350, 'goomba').setScale(0.22);
 
-
+            
 
     
 
@@ -178,15 +200,15 @@
             g2coll = this.physics.add.collider(goomba2, platforms);
             this.physics.add.collider(koopa1, platforms);
             this.physics.add.collider(player, platforms);
-
+            //this.physics.add.collider(planta1, platforms);
             this.physics.add.collider(setas, platforms);
             this.physics.add.collider(player, tuberia);
-
-
-            this.physics.add.collider(koopa1, player, muerte, null, this);
-            this.physics.add.collider(caparazones, player, Cmuerte, null, this);
-            this.physics.add.collider(goomba1, player, muerte, null, this);
-            this.physics.add.collider(goomba2, player, muerte, null, this);
+            //this.physics.add.collider( planta1,player, muerteE, null, this);
+            this.physics.add.collider(koopa1, player, muerteK, null, this);
+            this.physics.add.collider(fuegos, player, muerteS, null, this);
+            this.physics.add.collider(goomba1, player, muerteE, null, this);
+            this.physics.add.collider(goomba2, player, muerteE, null, this);
+            this.physics.add.collider(spikes, player, muerteS, null, this);
             this.physics.add.collider(goomba1, tuberia, rebote, null, this);
             this.physics.add.collider(goomba2, tuberia, rebote, null, this);
             this.physics.add.collider(setas, tuberia, rebote, null, this);
@@ -194,23 +216,27 @@
             this.physics.add.collider(player, setas, powerUp, null, this);
             this.physics.add.collider(koopa1, tuberia, rebote, null, this);
             this.physics.add.collider(player, tp, nextLvl, null, this);
-            this.physics.add.collider(player, tp2, muertecaida, null, this);
-            this.physics.add.collider(caparazones, platforms);
-            this.physics.add.collider(caparazones, tuberia, rebote, null, this);
+            this.physics.add.collider(player, tp2, muerteC, null, this);
+            this.physics.add.collider(fuegos, platforms);
+            this.physics.add.collider(fuegos, tuberia, rebote, null, this);
             goomba1.setVelocityX(160);
             goomba2.setVelocityX(-160);
             cursors = this.input.keyboard.createCursorKeys();
 
 
-            speed1 = Phaser.Math.GetSpeed(-600, 6);
-            speed2 = Phaser.Math.GetSpeed(600, 3);
+            speed1 = 0;
+            speed2 = Phaser.Math.GetSpeed(-900, 6);
+
 
             this.time.delayedCall(2500, goombasprint, [], this);
+            this.time.delayedCall(2500, tiraFuego, [], this);
+
+
 
             this.physics.world.setBounds(0, 0, 4000, 900);
             player.body.collideWorldBounds = true;
 
-
+            
 
             this.anims.create({
                 key: 'left',
@@ -268,26 +294,23 @@
 
         function update(time, delta) {
 
-            
 
-            koopa1.x += speed1 * delta;
-
-
-            if (koopa1.x < 2700) {
-                speed1 = Phaser.Math.GetSpeed(600, 6);
+            if (koopa1.x < player.x && player.x>2500 && koopa1.x!=player.x+10) {
+                koopa1.setVelocityX(100);
+                direccion = "derecha";
                 koopa1.anims.play('KRight');
-                tiracaparazon();
-
-
-
-            } else if (koopa1.x > 3500) {
-                speed1 = Phaser.Math.GetSpeed(-600, 6);
+            } else if (koopa1.x > player.x && player.x>2500 && koopa1.x!=player.x-10) {
+                koopa1.setVelocityX(-100);
+                direccion = "izquierda";
                 koopa1.anims.play('KLeft');
-                tiracaparazon();
+                
+            } else if(koopa1.x<2500){
+                koopa1.setVelocityX(100);
+                direccion = "derecha";
+                koopa1.anims.play('KRight');
 
             }
-
-
+            
 
             if (cursors.left.isDown) {
                 player.setVelocityX(-160);
@@ -326,6 +349,7 @@
             this.time.delayedCall(500, goombanormal, [], this);
 
         }
+
         function goombanormal() {
             goomba1.setVelocityX(-160);
             goomba2.setVelocityX(-160);
@@ -344,13 +368,16 @@
             setas.clear(true);
 
         }
-        function tiracaparazon() {
-            koopa1.setVelocityY(-400);
-
-            capa = caparazones.create(koopa1.x, 500, 'caparazon').setScale(0.03);
-            capa.setVelocityX(-250);
-            capa.setBounce(1);
-
+        function tiraFuego() {
+            fuego = fuegos.create(koopa1.x, 500, 'fuego').setScale(0.03);
+            if(direccion=="izquierda"){
+            fuego.setVelocityX(-250);}
+            else if(direccion=="derecha"){
+                fuego.setVelocityX(250);
+            }
+            fuego.setBounce(1);
+            this.time.delayedCall(2500, tiraFuego, [], this);
+            
         }
         function soltarSeta() {
             if (setaD == false) {
@@ -366,7 +393,7 @@
             tamaño = "pequeño";
             player.clearTint(true);
         }
-        function Cmuerte(player, enemy) {
+        function muerteO(player, enemy) {
             if(  player.body.velocity.y > 0 || enemy.body.blocked.up){
                 enemy.setVelocityX(0);
                 player.setVelocityY(-400);
@@ -396,7 +423,7 @@
         }
         }
 
-        function muertecaida(player,enemy ) {
+        function muerteC(player,enemy ) {
 
             if (tamaño == "pequeño") {
                 player.setVelocityY(-400);
@@ -419,11 +446,12 @@
             }
         }
 
-        function muerte(enemy, player) {
+        
+
+        function muerteE(enemy, player) {
           if(  player.body.velocity.y > 0 || enemy.body.blocked.up){
             player.setVelocityY(-400);
-            enemy.y=2000;
-              enemy.x=-1000;
+              enemy.setImmovable(true);
           }
           else{
             if (tamaño == "pequeño") {
@@ -450,8 +478,63 @@
             }}
         }
 
+        function muerteK(enemy, player,delta) {
+          if(  player.body.velocity.y > 0 || enemy.body.blocked.up){
+            player.setVelocityY(-400);
+          }
+          else{
+            if (tamaño == "pequeño") {
+                player.setVelocityY(-400);
+                this.physics.pause();
+
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;
+            }
+            else {
+                player.setVelocityY(-400);
+                player.setScale(0.5);
+                player.tint = 0xff0000;
+                
+
+
+
+                if (toque == true) {
+                    enemy.setVelocityX(-160);
+                }
+                else { enemy.setVelocityX(160) }
+                toque = !toque;
+
+                this.time.delayedCall(1000, cambioTamaño, [], this);
+
+            }}
+        }
+
+
+        function muerteS(player,enemy){
+            if (tamaño == "pequeño") {
+                this.physics.pause();
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;
+            }
+            else {
+                player.setScale(0.5);
+                player.tint = 0xff0000;
+
+                if (toque == true) {
+                    enemy.setVelocityX(-160);
+                }
+                else { enemy.setVelocityX(160) }
+                toque = !toque;
+
+                this.time.delayedCall(1000, cambioTamaño, [], this);
+
+            }
+        }
+
         function nextLvl() {
-            window.location.href = "/Level2.html"
+            window.location.href = "/Level3.html"
         }
 
     </script>
