@@ -69,6 +69,10 @@
             this.load.spritesheet('goomba', 'assets/goomba_desert.png', { frameWidth: 200, frameHeight: 160 });
             this.load.spritesheet('player', 'assets/mariosprite.png', { frameWidth: 64.185, frameHeight: 100 });
             this.load.image('seta', 'assets/seta.png');
+            this.load.audio('theme', ['assets/level2.mp3']);
+            this.load.audio('jump', ['assets/jump.mp3']);
+            this.load.audio('powerUp', ['assets/powerUp.mp3']);
+            this.load.audio('powerDown', ['assets/powerDown.mp3']);
         }
 
         function create() {
@@ -82,11 +86,8 @@
             tp = this.physics.add.staticGroup();
             tp2 = this.physics.add.staticGroup();
             spikes = this.physics.add.staticGroup();
-
-
             fuegos = this.physics.add.group();
             setas = this.physics.add.group();
-            cannon = this.physics.add.staticGroup();
             setaDropper = this.physics.add.staticGroup();
             cactus = this.physics.add.staticGroup();
             
@@ -115,6 +116,7 @@
             nubes.create(2000, 150, 'nube').setScale(1).refreshBody();
             nubes.create(3700, 250, 'nube').setScale(1).refreshBody();
             nubes.create(3000, 150, 'nube').setScale(1).refreshBody();
+            cactus.create(800, 520, 'cactus').setScale(0.3).refreshBody();
             cactus.create(1200, 520, 'cactus').setScale(0.3).refreshBody();
             cactus.create(2400, 520, 'cactus').setScale(0.3).refreshBody();
             tuberia.create(3700, 550, 'tuberia').setScale(0.3).refreshBody();
@@ -184,9 +186,9 @@
             };
 
 
-            player = this.physics.add.sprite(200, 500, 'player').setScale(0.7);
+            player = this.physics.add.sprite(300, 500, 'player').setScale(0.7);
             koopa1 = this.physics.add.sprite(3000, 400, 'koopa').setScale(0.5);
-           // planta1 = this.physics.add.sprite(400, 300, 'planta').setScale(0.5);
+           // planta1 = this.physics.add.sprite(400, 300, 'overlapplanta').setScale(0.5);
             goomba2 = this.physics.add.sprite(1400, 350, 'goomba').setScale(0.22);
             goomba1 = this.physics.add.sprite(1550, 350, 'goomba').setScale(0.22);
 
@@ -213,7 +215,7 @@
             this.physics.add.collider(goomba2, tuberia, rebote, null, this);
             this.physics.add.collider(setas, tuberia, rebote, null, this);
             this.physics.add.collider(player, sD1, soltarSeta, null, this);
-            this.physics.add.collider(player, setas, powerUp, null, this);
+            this.physics.add.overlap(player, setas, powerUp, null, this);
             this.physics.add.collider(koopa1, tuberia, rebote, null, this);
             this.physics.add.collider(player, tp, nextLvl, null, this);
             this.physics.add.collider(player, tp2, muerteC, null, this);
@@ -286,10 +288,14 @@
             });
 
 
-            this.cameras.main.setBounds(0, 0, 4000, 600);
+            this.cameras.main.setBounds(0, 25, 4000, 600);
 
             this.cameras.main.startFollow(player);
             this.cameras.main.setZoom(1);
+
+            var music = this.sound.add('theme');
+
+             music.play();
         }
 
         function update(time, delta) {
@@ -331,6 +337,8 @@
 
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(-560);
+                var jump = this.sound.add('jump');
+                jump.play();
             }
         }
 
@@ -363,7 +371,9 @@
             if (tamaño == "pequeño") {
                 player.setVelocityY(-200);
                 player.setScale(0.7);
-                tamaño = "grande"
+                tamaño = "grande";
+                var boost = this.sound.add('powerUp');
+                boost.play();
             }
             setas.clear(true);
 
@@ -456,6 +466,7 @@
           else{
             if (tamaño == "pequeño") {
                 player.setVelocityY(-400);
+                enemy.setImmovable(true);
                 this.physics.pause();
 
                 player.setTint(0xff0000);
@@ -472,6 +483,8 @@
                 }
                 else { enemy.setVelocityX(160) }
                 toque = !toque;
+                var down = this.sound.add('powerDown');
+                    down.play();
 
                 this.time.delayedCall(1000, cambioTamaño, [], this);
 
@@ -505,6 +518,9 @@
                 else { enemy.setVelocityX(160) }
                 toque = !toque;
 
+                var down = this.sound.add('powerDown');
+                    down.play();
+
                 this.time.delayedCall(1000, cambioTamaño, [], this);
 
             }}
@@ -527,6 +543,8 @@
                 }
                 else { enemy.setVelocityX(160) }
                 toque = !toque;
+                var down = this.sound.add('powerDown');
+                    down.play();
 
                 this.time.delayedCall(1000, cambioTamaño, [], this);
 
@@ -534,6 +552,11 @@
         }
 
         function nextLvl() {
+            var down = this.sound.add('powerDown');
+            down.play();
+            this.time.delayedCall(1000, teleport, [], this);
+        }
+        function teleport() {
             window.location.href = "/Level3.html"
         }
 

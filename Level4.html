@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 3</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+
+        var config = {
+            type: Phaser.AUTO,
+            width: 1200,
+            height: 620,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 1100 },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        var platforms;
+        var tuberia;
+        var cursors;
+        var tamaño = "grande";
+        var fase = 1;
+        var timedEvent;
+        var partida;
+        var toque = true;
+        var direccion = "izquierda";
+        var game = new Phaser.Game(config);
+
+        function preload() {
+            this.load.image('sky', 'assets/sky_final.png');
+            this.load.image('lava', 'assets/lava.png');
+            this.load.image('bloqueduro', 'assets/bloqueduro_iron.png');
+            this.load.image('gold', 'assets/bloqueduro_gold.png');
+            this.load.image('cadenas', 'assets/cadenas.png');
+            this.load.image('skull', 'assets/skull.png');
+            this.load.image('vela', 'assets/vela.png');
+            this.load.image('fuego', 'assets/fireball.png');
+            this.load.image('button', 'assets/button.png');
+            this.load.spritesheet('bowser', 'assets/bowser.png', { frameWidth: 500, frameHeight: 500 });
+            this.load.spritesheet('bowser2', 'assets/bowser2.png', { frameWidth: 500, frameHeight: 500 });
+            this.load.spritesheet('bowser3', 'assets/bowser3.png', { frameWidth: 500, frameHeight: 500 });
+            this.load.spritesheet('player', 'assets/mariosprite.png', { frameWidth: 64.185, frameHeight: 100 });
+            this.load.audio('theme', ['assets/level4.mp3']);
+            this.load.audio('jump', ['assets/jump.mp3']);
+            this.load.audio('celebration', ['assets/celebration.mp3']);
+            this.load.audio('powerDown', ['assets/powerDown.mp3']);
+        }
+
+        function create() {
+
+            partida = 1;
+            for (let i = 0; i < 20; i++) {
+                this.add.image(i * 400, 400, 'sky');
+                this.add.image(i * 400, 50, 'sky');
+            };
+            this.add.image(600, 200, 'skull').setScale(0.4);
+
+            block = this.physics.add.staticGroup();
+            plataforma = this.physics.add.staticGroup();
+
+            lava = this.physics.add.staticGroup();
+            button = this.physics.add.staticGroup();
+
+            fire = this.physics.add.group();
+
+
+
+            this.load.image('cadenas', 'assets/cadenas.png');
+            this.add.image(240, 250, 'cadenas').setScale(1);
+            this.add.image(960, 250, 'cadenas').setScale(1);
+
+            for (let i = 0; i < 20; i++) {
+                block.create(0, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
+            }
+            for (let i = 0; i < 27; i++) {
+                block.create(i * 45, 0, 'bloqueduro').setScale(0.3).refreshBody();
+            }
+            for (let i = 0; i < 9; i++) {
+                block.create(1200, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
+            }
+            button.create(1200, 405, 'bloqueduro').setScale(0.3).refreshBody();
+
+            button.create(1200, 450, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(1200, 495, 'bloqueduro').setScale(0.3).refreshBody();
+
+            for (let i = 27; i < 60; i++) {
+                block.create(i * 45, 550, 'gold').setScale(0.3).refreshBody();
+                block.create(i * 45, 590, 'gold').setScale(0.3).refreshBody();
+                block.create(i * 45, 630, 'gold').setScale(0.3).refreshBody();
+
+
+            }
+
+
+            for (let i = 5; i < 22; i++) {
+                plataforma.create(i * 45, 500, 'bloqueduro').setScale(0.3).refreshBody();
+            }
+            for (let i = 0; i < 20; i++) {
+                block.create(2700, i * 45, 'gold').setScale(0.3).refreshBody();
+            }
+
+            player = this.physics.add.sprite(400, 0, 'player').setScale(0.7);
+            bowser = this.physics.add.sprite(900, 400, 'bowser').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
+            bowser2 = this.physics.add.sprite(1400, 600, 'bowser2').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
+            bowser3 = this.physics.add.sprite(1400, 600, 'bowser3').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
+
+            bowser.setVelocityX(-150);
+
+            
+            lava.create(890, 670, 'lava').setScale(1).refreshBody();
+            lava.create(330, 670, 'lava').setScale(1).refreshBody();
+
+            block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(0, 540, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(0, 585, 'bloqueduro').setScale(0.3).refreshBody();
+            block.create(0, 630, 'bloqueduro').setScale(0.3).refreshBody();
+
+            this.physics.add.collider(player, plataforma);
+            this.physics.add.collider(player, block);
+            this.physics.add.collider(bowser, plataforma);
+            this.physics.add.collider(bowser, player, muerteE, null, this);
+            this.physics.add.collider(bowser2, player, muerteE, null, this);
+            this.physics.add.collider(bowser3, player, muerteE, null, this);
+
+            cursors = this.input.keyboard.createCursorKeys();
+            this.physics.world.setBounds(0, 0, 4000, 900);
+            player.body.collideWorldBounds = true;
+
+            this.time.delayedCall(1000, bowserJump, [], this);
+
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
+                frameRate: 10,
+                repeat: 0
+            });
+
+
+            this.anims.create({
+                key: 'turn',
+                frames: [{ key: 'player', frame: 6 }],
+                frameRate: 10
+            });
+
+            player.anims.play('turn');
+
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
+                frameRate: 10,
+                //repeat: 1
+            });
+
+            this.anims.create({
+                key: 'B2Right',
+                frames: [{ key: 'bowser2', frame: 1 }],
+                frameRate: 10
+            });
+            this.anims.create({
+                key: 'B3Right',
+                frames: [{ key: 'bowser3', frame: 1 }],
+                frameRate: 10
+            });
+            this.anims.create({
+                key: 'B3Left',
+                frames: [{ key: 'bowser3', frame: 0 }],
+                frameRate: 10
+            });
+
+
+
+            this.cameras.main.setBounds(0, 0, 4000, 600);
+
+            this.cameras.main.setZoom(1);
+
+            var music = this.sound.add('theme');
+
+             music.play();
+        }
+
+        function update(time, delta) {
+            if (bowser.y > 5000) {
+                if (fase == 1) {
+                    bowser2 = this.physics.add.sprite(1100, 600, 'bowser2').setScale(0.17);
+                    bowser2.setVelocityY(-800);
+                    bowser2.setVelocityX(-100);
+                    this.physics.add.collider(bowser2, plataforma);
+                    this.physics.add.collider(bowser2, button);
+                    this.physics.add.collider(bowser2, block);
+                    this.physics.add.collider(bowser2, player, muerteE, null, this);
+
+                    lava.create(890, 670, 'lava').setScale(1).refreshBody();
+                    lava.create(330, 670, 'lava').setScale(1).refreshBody();
+                    block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 540, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 585, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 630, 'bloqueduro').setScale(0.3).refreshBody();
+                    this.time.delayedCall(1000, bowserSprint, [], this);
+
+                    fase = 2;
+                }
+            }
+            if(bowser.x>0){
+                bowser.setVelocityX(-100);
+            }
+            if (bowser2.y > 5000) {
+                if (fase == 2) {
+                    bowser3 = this.physics.add.sprite(1100, 600, 'bowser3').setScale(0.17);
+                    bowser3.setVelocityY(-800);
+                    bowser3.setVelocityX(-100);
+                    this.physics.add.collider(bowser3, plataforma);
+                    this.physics.add.collider(bowser3, player, muerteE, null, this);
+
+                    lava.create(890, 670, 'lava').setScale(1).refreshBody();
+                    lava.create(330, 670, 'lava').setScale(1).refreshBody();
+                    block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 540, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 585, 'bloqueduro').setScale(0.3).refreshBody();
+                    block.create(0, 630, 'bloqueduro').setScale(0.3).refreshBody();
+                    this.time.delayedCall(3000, bowserFire, [], this);
+                    this.time.delayedCall(10000, killButton, [], this);
+
+                    fase = 3;
+                }
+            }
+            if (bowser2.x < 200) {
+                bowser2.anims.play('B2Right');
+                bowser2.setVelocityX(100);
+                direccion = "derecha"
+            }
+            
+            if (bowser3.x < 200) {
+                bowser3.anims.play('B3Right');
+                bowser3.setVelocityX(300);
+                direccion3 = "derecha"
+
+            }
+            if (bowser3.x > 1000) {
+                bowser3.anims.play('B3Left');
+                bowser3.setVelocityX(-300);
+                direccion3 = "izquierda"
+            }
+
+            if (cursors.left.isDown) {
+                player.setVelocityX(-160);
+                player.anims.play('left', true);
+
+
+            }
+            else if (cursors.right.isDown) {
+                player.setVelocityX(160);
+                player.anims.play('right', true);
+
+            }
+            else {
+                player.setVelocityX(0);
+                player.anims.play('turn');
+
+            }
+
+            if (cursors.up.isDown && player.body.touching.down) {
+                player.setVelocityY(-560);
+                var jump = this.sound.add('jump');
+                jump.play();
+            }
+        }
+
+        function cambioTamaño() {
+            tamaño = "pequeño";
+            player.clearTint(true);
+        }
+
+        function bowserJump() {
+            bowser.setVelocityY(-400);
+            this.time.delayedCall(3000, bowserJump, [], this);
+        }
+
+        function killButton() {
+            button.create(1150, 470, 'button').setScale(0.15).refreshBody();
+            block.create(1150, 495, 'bloqueduro').setScale(0.3).refreshBody();
+            this.physics.add.collider(player, button, killBowser, null, this);
+
+        }
+        function bowserSprint() {
+            if (direccion == "izquierda") {
+                bowser2.setVelocityX(-500);
+            }
+            if (direccion == "derecha") {
+                bowser2.setVelocityX(500);
+            }
+            this.time.delayedCall(1000, bowserNormal, [], this);
+
+        }
+        function bowserNormal() {
+            if (direccion == "izquierda") {
+                bowser2.setVelocityX(-100);
+            }
+            if (direccion == "derecha") {
+                bowser2.setVelocityX(100);
+            }
+            this.time.delayedCall(500, bowserSprint, [], this);
+        }
+
+        function bowserFire() {
+            fuego = fire.create(bowser3.x, bowser3.y-50, 'fuego').setScale(0.03);
+            this.physics.add.collider(fuego, plataforma);
+            if(direccion3=="derecha"){
+            fuego.setVelocityX(550);}
+            if(direccion3=="izquierda"){
+            fuego.setVelocityX(-550);}
+            fuego.setBounce(0.9);
+            this.physics.add.collider(fuego, player, muerteO, null, this);
+
+            this.time.delayedCall(3000, bowserFire, [], this);
+            
+        }
+
+        function killBowser() {
+            plataforma.clear(true);
+            button.clear(true);
+            this.time.delayedCall(1500, camerafollow, [], this);
+        }
+
+        function camerafollow() {
+            this.cameras.main.startFollow(player);
+
+        }
+
+        function muerteO(enemy,player) {
+                if (tamaño == "pequeño") {
+                    player.setVelocityY(-400);
+                    this.physics.pause();
+                    player.setTint(0xff0000);
+                    speed1 = 0;
+                    gameOver = true;
+                }
+                else {
+                    player.setVelocityY(-400);
+                    player.setScale(0.5);
+                    player.tint = 0xff0000;
+
+                    if (toque == true) {
+                        enemy.setVelocityX(-160);
+                    }
+                    else { enemy.setVelocityX(160) }
+                    toque = !toque;
+                    var down = this.sound.add('powerDown');
+                    down.play();
+
+                    this.time.delayedCall(1000, cambioTamaño, [], this);
+
+                }
+            }
+        
+
+
+
+        function muerteE(enemy, player) {
+                if (tamaño == "pequeño") {
+                    player.setVelocityY(-400);
+                    this.physics.pause();
+
+                    player.setTint(0xff0000);
+                    speed1 = 0;
+                    gameOver = true;
+                }
+                else {
+                    player.setVelocityY(-400);
+                    player.setScale(0.5);
+                    player.tint = 0xff0000;
+                    var down = this.sound.add('powerDown');
+                    down.play();
+
+                    this.time.delayedCall(1000, cambioTamaño, [], this);
+
+                }
+            }
+    </script>
+
+</body>
+
+</html>
