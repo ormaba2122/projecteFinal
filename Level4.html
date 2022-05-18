@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 3</title>
+    <title>MarianoBros</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
@@ -42,6 +42,9 @@
         var timedEvent;
         var partida;
         var toque = true;
+        var inicio = true;
+        var stopmusic = false;
+        var mobil = true;
         var direccion = "izquierda";
         var game = new Phaser.Game(config);
 
@@ -55,6 +58,8 @@
             this.load.image('vela', 'assets/vela.png');
             this.load.image('fuego', 'assets/fireball.png');
             this.load.image('button', 'assets/button.png');
+            this.load.image('thanks', 'assets/thanks.png');
+
             this.load.spritesheet('bowser', 'assets/bowser.png', { frameWidth: 500, frameHeight: 500 });
             this.load.spritesheet('bowser2', 'assets/bowser2.png', { frameWidth: 500, frameHeight: 500 });
             this.load.spritesheet('bowser3', 'assets/bowser3.png', { frameWidth: 500, frameHeight: 500 });
@@ -63,6 +68,9 @@
             this.load.audio('jump', ['assets/jump.mp3']);
             this.load.audio('celebration', ['assets/celebration.mp3']);
             this.load.audio('powerDown', ['assets/powerDown.mp3']);
+            this.load.audio('laugh', ['assets/bowserRisa.mp3']);
+            this.load.audio('roar', ['assets/bowserRoar.mp3']);
+
         }
 
         function create() {
@@ -82,6 +90,7 @@
 
             fire = this.physics.add.group();
 
+            this.add.image(2000, 300, 'thanks').setScale(1);
 
 
             this.load.image('cadenas', 'assets/cadenas.png');
@@ -120,6 +129,8 @@
 
             player = this.physics.add.sprite(400, 0, 'player').setScale(0.7);
             bowser = this.physics.add.sprite(900, 400, 'bowser').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
+            var roar = this.sound.add('roar',{volume: 2});
+            roar.play();
             bowser2 = this.physics.add.sprite(1400, 600, 'bowser2').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
             bowser3 = this.physics.add.sprite(1400, 600, 'bowser3').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
 
@@ -193,13 +204,19 @@
             this.cameras.main.setBounds(0, 0, 4000, 600);
 
             this.cameras.main.setZoom(1);
+            
+            
+            
 
-            var music = this.sound.add('theme');
-
-             music.play();
+            
         }
 
         function update(time, delta) {
+            if(bowser.x>897){
+               var music = this.sound.add('theme');
+
+            music.play(); 
+            }            
             if (bowser.y > 5000) {
                 if (fase == 1) {
                     bowser2 = this.physics.add.sprite(1100, 600, 'bowser2').setScale(0.17);
@@ -209,7 +226,8 @@
                     this.physics.add.collider(bowser2, button);
                     this.physics.add.collider(bowser2, block);
                     this.physics.add.collider(bowser2, player, muerteE, null, this);
-
+                    var roar = this.sound.add('roar',{volume: 2});
+                    roar.play();
                     lava.create(890, 670, 'lava').setScale(1).refreshBody();
                     lava.create(330, 670, 'lava').setScale(1).refreshBody();
                     block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
@@ -224,7 +242,7 @@
                 }
             }
             if(bowser.x>0){
-                bowser.setVelocityX(-100);
+                bowser.setVelocityX(-150);
             }
             if (bowser2.y > 5000) {
                 if (fase == 2) {
@@ -233,7 +251,8 @@
                     bowser3.setVelocityX(-100);
                     this.physics.add.collider(bowser3, plataforma);
                     this.physics.add.collider(bowser3, player, muerteE, null, this);
-
+                    var roar = this.sound.add('roar',{volume: 2});
+                    roar.play();
                     lava.create(890, 670, 'lava').setScale(1).refreshBody();
                     lava.create(330, 670, 'lava').setScale(1).refreshBody();
                     block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
@@ -247,6 +266,20 @@
 
                     fase = 3;
                 }
+            }
+
+            if(player.y>600){
+                if(mobil==true){
+            
+                mobil = false;
+                var die = this.sound.add('laugh',{volume: 2});
+                die.play();
+                player.setImmovable(true);
+                this.time.delayedCall(3500, teleport2, [], this);
+
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;}
             }
             if (bowser2.x < 200) {
                 bowser2.anims.play('B2Right');
@@ -267,14 +300,16 @@
             }
 
             if (cursors.left.isDown) {
+                if(mobil == true){
                 player.setVelocityX(-160);
                 player.anims.play('left', true);
-
+                }
 
             }
             else if (cursors.right.isDown) {
+                if(mobil == true){
                 player.setVelocityX(160);
-                player.anims.play('right', true);
+                player.anims.play('right', true);}
 
             }
             else {
@@ -284,9 +319,10 @@
             }
 
             if (cursors.up.isDown && player.body.touching.down) {
+                if(mobil == true){
                 player.setVelocityY(-560);
-                var jump = this.sound.add('jump');
-                jump.play();
+                var jump = this.sound.add('jump',{volume: 0.2});
+                jump.play();}
             }
         }
 
@@ -303,6 +339,7 @@
         function killButton() {
             button.create(1150, 470, 'button').setScale(0.15).refreshBody();
             block.create(1150, 495, 'bloqueduro').setScale(0.3).refreshBody();
+            
             this.physics.add.collider(player, button, killBowser, null, this);
 
         }
@@ -334,19 +371,25 @@
             if(direccion3=="izquierda"){
             fuego.setVelocityX(-550);}
             fuego.setBounce(0.9);
-            this.physics.add.collider(fuego, player, muerteO, null, this);
-
+            this.physics.add.overlap(fuego, player, muerteO, null, this);
             this.time.delayedCall(3000, bowserFire, [], this);
             
         }
 
         function killBowser() {
+            var roar = this.sound.add('roar',{volume: 3});
+            roar.play();
             plataforma.clear(true);
             button.clear(true);
-            this.time.delayedCall(1500, camerafollow, [], this);
+            
+            this.time.delayedCall(2500, camerafollow, [], this);
         }
 
         function camerafollow() {
+            
+            this.sound.stopAll();
+            var celebration = this.sound.add('celebration',{volume: 2});
+            celebration.play();
             this.cameras.main.startFollow(player);
 
         }
@@ -354,10 +397,14 @@
         function muerteO(enemy,player) {
                 if (tamaño == "pequeño") {
                     player.setVelocityY(-400);
-                    this.physics.pause();
-                    player.setTint(0xff0000);
-                    speed1 = 0;
-                    gameOver = true;
+                mobil = false;
+                var die = this.sound.add('laugh',{volume: 2});
+                die.play();
+                player.setImmovable(true);
+                this.time.delayedCall(3500, teleport2, [], this);
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;
                 }
                 else {
                     player.setVelocityY(-400);
@@ -383,11 +430,15 @@
         function muerteE(enemy, player) {
                 if (tamaño == "pequeño") {
                     player.setVelocityY(-400);
-                    this.physics.pause();
+                mobil = false;
+                var die = this.sound.add('laugh',{volume: 2});
+                die.play();
+                player.setImmovable(true);
+                this.time.delayedCall(3500, teleport2, [], this);
 
-                    player.setTint(0xff0000);
-                    speed1 = 0;
-                    gameOver = true;
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;
                 }
                 else {
                     player.setVelocityY(-400);
@@ -400,6 +451,11 @@
 
                 }
             }
+
+            function teleport2() {
+            window.location.href = "/Level4.html"
+        }
+
     </script>
 
 </body>

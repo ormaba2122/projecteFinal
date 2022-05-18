@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 3</title>
+    <title>MarianoBros</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
@@ -18,7 +18,7 @@
 
         var config = {
             type: Phaser.AUTO,
-            width: 1200,
+            width: 1300,
             height: 620,
             physics: {
                 default: 'arcade',
@@ -40,9 +40,10 @@
         var toque = true;
         var crebote = true;
         var setaD = false;
-        var tamaño = "grande";
+        var tamaño = "pequeño";
         var timedEvent;
         var partida;
+        var mobil = true;
         var direccion = "izquierda";
         var game = new Phaser.Game(config);
 
@@ -73,6 +74,9 @@
             this.load.audio('jump', ['assets/jump.mp3']);
             this.load.audio('powerUp', ['assets/powerUp.mp3']);
             this.load.audio('powerDown', ['assets/powerDown.mp3']);
+            this.load.audio('enemyDown', ['assets/killEnemy.mp3']);
+            this.load.audio('marioDie', ['assets/marioDie.mp3']);
+            this.load.audio('boing', ['assets/boing.mp3']);
         }
 
         function create() {
@@ -94,21 +98,10 @@
             setaDropper = this.physics.add.staticGroup();
             cactus = this.physics.add.staticGroup();
             bouncer = this.physics.add.staticGroup();
-
-                this.add.image(600, 300, 'sky').setScale(2.7);
-
-
-            
-
+            this.add.image(600, 300, 'sky').setScale(2.7);
             tuberia.create(1700, 540, 'tuberia').setScale(0.3).refreshBody();
-
             tp.create(4000, 500, 'a').setScale(1.5).refreshBody();
-
-
-
             sD1 = setaDropper.create(1200, 289, 'a').setScale(0.5).refreshBody();
-
-
             for (let i = 0; i < 61; i++) {
                 tp2.create(i * 30, 785, 'a').setScale(0.5).refreshBody();
             };
@@ -118,25 +111,14 @@
             bouncer.create(2800, 575, 'bouncer').setScale(0.4).refreshBody();
             bouncer.create(3200, 575, 'bouncer').setScale(0.4).refreshBody();
             bouncer.create(3600, 575, 'bouncer').setScale(0.4).refreshBody();
-
-
-
-
-
-            for (let i = 0; i < 6; i++) {
-                tp2.create(i * 100 + 1850, 720, 'a').setScale(1.5).refreshBody();
+            for (let i = 0; i < 60; i++) {
+                tp2.create(i * 50 + 1850, 720, 'a').setScale(1.5).refreshBody();
             };
 
             platforms.create(4000, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3970, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3940, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3910, 585, 'bloqueduro').setScale(0.2).refreshBody();
-
-
-
-
-
-            
 
             platforms.create(1100, 450, 'n_plat').setScale(0.4).refreshBody();
             platforms.create(1130, 450, 'n_plat').setScale(0.4).refreshBody();
@@ -157,17 +139,11 @@
 
             platforms.create(1480, 600, 'defaultBrick').setScale(0.2).refreshBody();
 
-
-
-
-
-
             for (let i = 3940; i < 4000; i++) {
                 tp2.create(i, 475, 'a').setScale(0.2).refreshBody();
             };
 
-
-            player = this.physics.add.sprite(100, 0, 'player').setScale(0.7);
+            player = this.physics.add.sprite(100, 0, 'player').setScale(0.5);
             // planta1 = this.physics.add.sprite(400, 300, 'planta').setScale(0.5);
             goomba2 = this.physics.add.sprite(40000, 250, 'goomba').setScale(0.22);
             goomba1 = this.physics.add.sprite(600, 250, 'goomba').setScale(0.22);
@@ -175,12 +151,6 @@
             koopa2 = this.physics.add.sprite(1800, 450, 'koopa').setScale(0.5);
             koopa1.setVelocityX(-200);
             koopa2.setVelocityX(-200);
-
-
-
-
-
-
 
             this.add.image(3980, 520, 'tuberiaTP').setScale(0.4);
             this.physics.add.collider(player, platforms);
@@ -271,6 +241,161 @@
             var music = this.sound.add('theme');
 
              music.play();
+
+             function muerteO(player, enemy) {
+            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
+                enemy.setVelocityX(0);
+                player.setVelocityY(-400);
+                var down = this.sound.add('enemyDown');
+                down.play();
+
+            } else {
+                if (tamaño == "pequeño") {
+                    player.setVelocityY(-400);
+                    this.physics.pause();
+                    player.setTint(0xff0000);
+                    mobil = false;
+                    music.stop();
+                var die = this.sound.add('marioDie');
+                die.play();
+                player.setImmovable(true);
+                this.time.delayedCall(3500, teleport2, [], this);
+                    speed1 = 0;
+                    gameOver = true;
+                }
+                else {
+                    player.setVelocityY(-400);
+                    player.setScale(0.5);
+                    player.tint = 0xff0000;
+
+                    if (toque == true) {
+                        enemy.setVelocityX(-160);
+                    }
+                    else { enemy.setVelocityX(160) }
+                    toque = !toque;
+                    var down = this.sound.add('powerDown');
+                    down.play();
+                    this.time.delayedCall(1000, cambioTamaño, [], this);
+
+                }
+            }
+        }
+
+        function muerteC(player, enemy) {
+
+            if (tamaño == "pequeño") {
+                player.setVelocityY(-400);
+                this.physics.pause();
+                mobil = false;
+                music.stop();
+
+                var die = this.sound.add('marioDie');
+                die.play();
+                player.setImmovable(true);
+                this.physics.pause();
+                this.time.delayedCall(3500, teleport2, [], this);
+
+                player.setTint(0xff0000);
+                speed1 = 0;
+                gameOver = true;
+            }
+            else {
+                player.y = 200;
+                player.x = player.x - 200;
+                player.setScale(0.5);
+                player.tint = 0xff0000;
+
+                var down = this.sound.add('powerDown');
+                    down.play();
+
+                this.time.delayedCall(1000, cambioTamaño, [], this);
+
+            }
+        }
+
+
+
+        function muerteE(enemy, player) {
+            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
+                player.setVelocityY(-600);
+                enemy.x = 6000000;
+                var down = this.sound.add('enemyDown');
+                down.play();
+            }
+            else {
+                if (tamaño == "pequeño") {
+                    player.setVelocityY(-400);
+                    player.setTint(0xff0000);
+                    speed1 = 0;
+                    music.stop();
+                    mobil = false;
+                var die = this.sound.add('marioDie');
+                die.play();
+                player.setImmovable(true);
+                this.physics.pause();
+                this.time.delayedCall(3500, teleport2, [], this);
+                    gameOver = true;
+                }
+                else {
+                    player.setVelocityY(-400);
+                    player.setScale(0.5);
+                    player.tint = 0xff0000;
+
+                    if (toque == true) {
+                        enemy.setVelocityX(-160);
+                    }
+                    else { enemy.setVelocityX(160) }
+                    toque = !toque;
+                    var down = this.sound.add('powerDown');
+                    down.play();
+                    this.time.delayedCall(1000, cambioTamaño, [], this);
+
+                }
+            }
+        }
+
+        function muerteK(enemy, player, delta) {
+            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
+                player.setVelocityY(-400);
+                var down = this.sound.add('enemyDown');
+                down.play();
+            }
+            else {
+                if (tamaño == "pequeño") {
+                    player.setVelocityY(-400);
+                    mobil = false;
+                    music.stop();
+
+                var die = this.sound.add('marioDie');
+                die.play();
+                player.setImmovable(true);
+                this.physics.pause();
+                this.time.delayedCall(3500, teleport2, [], this);
+
+                    player.setTint(0xff0000);
+                    speed1 = 0;
+                    gameOver = true;
+                }
+                else {
+                    player.setVelocityY(-400);
+                    player.setScale(0.5);
+                    player.tint = 0xff0000;
+
+
+
+
+                    if (toque == true) {
+                        enemy.setVelocityX(-160);
+                    }
+                    else { enemy.setVelocityX(160) }
+                    toque = !toque;
+                    var down = this.sound.add('powerDown');
+                    down.play();
+                    this.time.delayedCall(1000, cambioTamaño, [], this);
+
+                }
+            }
+        }
         }
 
         function update(time, delta) {
@@ -315,14 +440,16 @@
 
 
             if (cursors.left.isDown) {
+                if(mobil == true){
                 player.setVelocityX(-160);
                 player.anims.play('left', true);
-
+                }
 
             }
             else if (cursors.right.isDown) {
+                if(mobil == true){
                 player.setVelocityX(160);
-                player.anims.play('right', true);
+                player.anims.play('right', true);}
 
             }
             else {
@@ -332,9 +459,10 @@
             }
 
             if (cursors.up.isDown && player.body.touching.down) {
+                if(mobil == true){
                 player.setVelocityY(-560);
-                var jump = this.sound.add('jump');
-                jump.play();
+                var jump = this.sound.add('jump',{volume: 0.2});
+                jump.play();}
             }
         }
 
@@ -382,6 +510,8 @@
 
         function bounce() {
             player.setVelocityY(-600);
+            var boing = this.sound.add('boing');
+                boing.play();
 
         }
 
@@ -407,160 +537,19 @@
             this.time.delayedCall(2000, koopaJump, [], this);
 
         }
-        function muerteO(player, enemy) {
-            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
-                enemy.setVelocityX(0);
-                player.setVelocityY(-400);
-
-            } else {
-                if (tamaño == "pequeño") {
-                    player.setVelocityY(-400);
-                    this.physics.pause();
-                    player.setTint(0xff0000);
-                    speed1 = 0;
-                    gameOver = true;
-                }
-                else {
-                    player.setVelocityY(-400);
-                    player.setScale(0.5);
-                    player.tint = 0xff0000;
-
-                    if (toque == true) {
-                        enemy.setVelocityX(-160);
-                    }
-                    else { enemy.setVelocityX(160) }
-                    toque = !toque;
-                    var down = this.sound.add('powerDown');
-                    down.play();
-                    this.time.delayedCall(1000, cambioTamaño, [], this);
-
-                }
-            }
-        }
-
-        function muerteC(player, enemy) {
-
-            if (tamaño == "pequeño") {
-                player.setVelocityY(-400);
-                this.physics.pause();
-
-                player.setTint(0xff0000);
-                speed1 = 0;
-                gameOver = true;
-            }
-            else {
-                player.y = 200;
-                player.x = player.x - 200;
-                player.setScale(0.5);
-                player.tint = 0xff0000;
-
-                var down = this.sound.add('powerDown');
-                    down.play();
-
-                this.time.delayedCall(1000, cambioTamaño, [], this);
-
-            }
-        }
-
-
-
-        function muerteE(enemy, player) {
-            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
-                player.setVelocityY(-600);
-                enemy.x = 6000000;
-            }
-            else {
-                if (tamaño == "pequeño") {
-                    player.setVelocityY(-400);
-                    this.physics.pause();
-
-                    player.setTint(0xff0000);
-                    speed1 = 0;
-                    gameOver = true;
-                }
-                else {
-                    player.setVelocityY(-400);
-                    player.setScale(0.5);
-                    player.tint = 0xff0000;
-
-                    if (toque == true) {
-                        enemy.setVelocityX(-160);
-                    }
-                    else { enemy.setVelocityX(160) }
-                    toque = !toque;
-                    var down = this.sound.add('powerDown');
-                    down.play();
-                    this.time.delayedCall(1000, cambioTamaño, [], this);
-
-                }
-            }
-        }
-
-        function muerteK(enemy, player, delta) {
-            if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
-                player.setVelocityY(-400);
-            }
-            else {
-                if (tamaño == "pequeño") {
-                    player.setVelocityY(-400);
-                    this.physics.pause();
-
-                    player.setTint(0xff0000);
-                    speed1 = 0;
-                    gameOver = true;
-                }
-                else {
-                    player.setVelocityY(-400);
-                    player.setScale(0.5);
-                    player.tint = 0xff0000;
-
-
-
-
-                    if (toque == true) {
-                        enemy.setVelocityX(-160);
-                    }
-                    else { enemy.setVelocityX(160) }
-                    toque = !toque;
-                    var down = this.sound.add('powerDown');
-                    down.play();
-                    this.time.delayedCall(1000, cambioTamaño, [], this);
-
-                }
-            }
-        }
-
-
-        function muerteS(player, enemy) {
-            if (tamaño == "pequeño") {
-                this.physics.pause();
-                player.setTint(0xff0000);
-                speed1 = 0;
-                gameOver = true;
-            }
-            else {
-                player.setScale(0.5);
-                player.tint = 0xff0000;
-
-                if (toque == true) {
-                    enemy.setVelocityX(-160);
-                }
-                else { enemy.setVelocityX(160) }
-                toque = !toque;
-                var down = this.sound.add('powerDown');
-                    down.play();
-                this.time.delayedCall(1000, cambioTamaño, [], this);
-
-            }
-        }
+        
 
         function nextLvl() {
+            this.physics.pause();
             var down = this.sound.add('powerDown');
             down.play();
             this.time.delayedCall(1000, teleport, [], this);
         }
         function teleport() {
             window.location.href = "/Level4.html"
+        }
+        function teleport2() {
+            window.location.href = "/Level3.html"
         }
 
     </script>
