@@ -19,7 +19,7 @@
         var config = {
             type: Phaser.AUTO,
             width: 1300,
-            height: 620,
+            height: 750,
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -76,10 +76,9 @@
         function create() {
 
             partida = 1;
-            for (let i = 0; i < 20; i++) {
-                this.add.image(i * 400, 400, 'sky');
-                this.add.image(i * 400, 50, 'sky');
-            };
+
+            this.add.image(400, 350, 'sky').setScale(10);
+
             this.add.image(600, 200, 'skull').setScale(0.4);
 
             block = this.physics.add.staticGroup();
@@ -92,12 +91,14 @@
 
             this.add.image(2000, 300, 'thanks').setScale(1);
 
+            bowser2 = this.physics.add.sprite(1400, 600, 'bowser2').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
+            bowser3 = this.physics.add.sprite(1400, 600, 'bowser3').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
 
             this.load.image('cadenas', 'assets/cadenas.png');
             this.add.image(240, 250, 'cadenas').setScale(1);
             this.add.image(960, 250, 'cadenas').setScale(1);
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 40; i++) {
                 block.create(0, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
             }
             for (let i = 1; i < 27; i++) {
@@ -118,33 +119,32 @@
 
             for (let i = 27; i < 60; i++) {
                 block.create(i * 45, 550, 'gold').setScale(0.3).refreshBody();
-                block.create(i * 45, 590, 'gold').setScale(0.3).refreshBody();
-                block.create(i * 45, 630, 'gold').setScale(0.3).refreshBody();
-
-
             }
 
 
             for (let i = 5; i < 22; i++) {
                 plataforma.create(i * 45, 500, 'bloqueduro').setScale(0.3).refreshBody();
             }
-            for (let i = 0; i < 20; i++) {
-                block.create(2700, i * 45, 'gold').setScale(0.3).refreshBody();
-            }
+
 
             player = this.physics.add.sprite(400, 0, 'player').setScale(0.7);
             bowser = this.physics.add.sprite(900, 400, 'bowser').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
-            var roar = this.sound.add('roar',{volume: 2});
+            var roar = this.sound.add('roar', { volume: 2 });
             roar.play();
-            bowser2 = this.physics.add.sprite(1400, 600, 'bowser2').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
-            bowser3 = this.physics.add.sprite(1400, 600, 'bowser3').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
 
             bowser.setVelocityX(-150);
 
-            
-            lava.create(890, 670, 'lava').setScale(1).refreshBody();
-            lava.create(330, 670, 'lava').setScale(1).refreshBody();
 
+            lava.create(890, 750, 'lava').setScale(1).refreshBody();
+            lava.create(1200, 750, 'lava').setScale(1).refreshBody();
+            lava.create(1760, 750, 'lava').setScale(1).refreshBody();
+            lava.create(1960, 750, 'lava').setScale(1).refreshBody();
+            lava.create(2400, 750, 'lava').setScale(1).refreshBody();
+            lava.create(2160, 750, 'lava').setScale(1).refreshBody();
+            lava.create(330, 750, 'lava').setScale(1).refreshBody();
+            for (let i = 0; i < 20; i++) {
+                block.create(2700, i * 45, 'gold').setScale(0.3).refreshBody();
+            }
             block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
@@ -154,7 +154,7 @@
             block.create(1290, 540, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1290, 585, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1290, 630, 'bloqueduro').setScale(0.3).refreshBody();
-            
+
             block.create(0, 540, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(0, 585, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(0, 630, 'bloqueduro').setScale(0.3).refreshBody();
@@ -216,19 +216,19 @@
             this.cameras.main.setBounds(0, 0, 4000, 600);
 
             this.cameras.main.setZoom(1);
-            
-            
-            
 
-            
+
+
+
+
         }
 
         function update(time, delta) {
-            if(bowser.x>897){
-               var music = this.sound.add('theme');
+            if (bowser.x > 897) {
+                var music = this.sound.add('theme');
 
-            music.play(); 
-            }            
+                music.play();
+            }
             if (bowser.y > 5000) {
                 if (fase == 1) {
                     bowser2 = this.physics.add.sprite(1100, 600, 'bowser2').setScale(0.17);
@@ -238,10 +238,10 @@
                     this.physics.add.collider(bowser2, button);
                     this.physics.add.collider(bowser2, block);
                     this.physics.add.collider(bowser2, player, muerteE, null, this);
-                    var roar = this.sound.add('roar',{volume: 2});
+                    var roar = this.sound.add('roar', { volume: 2 });
                     roar.play();
-                    lava.create(890, 670, 'lava').setScale(1).refreshBody();
-                    lava.create(330, 670, 'lava').setScale(1).refreshBody();
+                    lava.create(890, 750, 'lava').setScale(1).refreshBody();
+                    lava.create(330, 750, 'lava').setScale(1).refreshBody();
                     block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
                     block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
                     block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
@@ -253,7 +253,7 @@
                     fase = 2;
                 }
             }
-            if(bowser.x>0){
+            if (bowser.x > 0) {
                 bowser.setVelocityX(-150);
             }
             if (bowser2.y > 5000) {
@@ -263,10 +263,10 @@
                     bowser3.setVelocityX(-100);
                     this.physics.add.collider(bowser3, plataforma);
                     this.physics.add.collider(bowser3, player, muerteE, null, this);
-                    var roar = this.sound.add('roar',{volume: 2});
+                    var roar = this.sound.add('roar', { volume: 2 });
                     roar.play();
-                    lava.create(890, 670, 'lava').setScale(1).refreshBody();
-                    lava.create(330, 670, 'lava').setScale(1).refreshBody();
+                    lava.create(890, 750, 'lava').setScale(1).refreshBody();
+                    lava.create(330, 750, 'lava').setScale(1).refreshBody();
                     block.create(1200, 540, 'bloqueduro').setScale(0.3).refreshBody();
                     block.create(1200, 585, 'bloqueduro').setScale(0.3).refreshBody();
                     block.create(1200, 630, 'bloqueduro').setScale(0.3).refreshBody();
@@ -280,25 +280,26 @@
                 }
             }
 
-            if(player.y>600){
-                if(mobil==true){
-            
-                mobil = false;
-                var die = this.sound.add('laugh',{volume: 2});
-                die.play();
-                player.setImmovable(true);
-                this.time.delayedCall(3500, teleport2, [], this);
+            if (player.y > 600) {
+                if (mobil == true) {
 
-                player.setTint(0xff0000);
-                speed1 = 0;
-                gameOver = true;}
+                    mobil = false;
+                    var die = this.sound.add('laugh', { volume: 2 });
+                    die.play();
+                    player.setImmovable(true);
+                    this.time.delayedCall(3500, teleport2, [], this);
+
+                    player.setTint(0xff0000);
+                    speed1 = 0;
+                    gameOver = true;
+                }
             }
             if (bowser2.x < 200) {
                 bowser2.anims.play('B2Right');
                 bowser2.setVelocityX(100);
                 direccion = "derecha"
             }
-            
+
             if (bowser3.x < 200) {
                 bowser3.anims.play('B3Right');
                 bowser3.setVelocityX(300);
@@ -312,16 +313,17 @@
             }
 
             if (cursors.left.isDown) {
-                if(mobil == true){
-                player.setVelocityX(-160);
-                player.anims.play('left', true);
+                if (mobil == true) {
+                    player.setVelocityX(-160);
+                    player.anims.play('left', true);
                 }
 
             }
             else if (cursors.right.isDown) {
-                if(mobil == true){
-                player.setVelocityX(160);
-                player.anims.play('right', true);}
+                if (mobil == true) {
+                    player.setVelocityX(160);
+                    player.anims.play('right', true);
+                }
 
             }
             else {
@@ -331,10 +333,11 @@
             }
 
             if (cursors.up.isDown && player.body.touching.down) {
-                if(mobil == true){
-                player.setVelocityY(-560);
-                var jump = this.sound.add('jump',{volume: 0.2});
-                jump.play();}
+                if (mobil == true) {
+                    player.setVelocityY(-560);
+                    var jump = this.sound.add('jump', { volume: 0.2 });
+                    jump.play();
+                }
             }
         }
 
@@ -351,7 +354,7 @@
         function killButton() {
             button.create(1150, 470, 'button').setScale(0.15).refreshBody();
             block.create(1150, 495, 'bloqueduro').setScale(0.3).refreshBody();
-            
+
             this.physics.add.collider(player, button, killBowser, null, this);
 
         }
@@ -376,74 +379,76 @@
         }
 
         function bowserFire() {
-            fuego = fire.create(bowser3.x, bowser3.y-50, 'fuego').setScale(0.03);
+            fuego = fire.create(bowser3.x, bowser3.y - 50, 'fuego').setScale(0.03);
             this.physics.add.collider(fuego, plataforma);
-            if(direccion3=="derecha"){
-            fuego.setVelocityX(550);}
-            if(direccion3=="izquierda"){
-            fuego.setVelocityX(-550);}
+            if (direccion3 == "derecha") {
+                fuego.setVelocityX(550);
+            }
+            if (direccion3 == "izquierda") {
+                fuego.setVelocityX(-550);
+            }
             fuego.setBounce(0.9);
             this.physics.add.overlap(fuego, player, muerteO, null, this);
             this.time.delayedCall(3000, bowserFire, [], this);
-            
+
         }
 
         function killBowser() {
-            var roar = this.sound.add('roar',{volume: 3});
+            var roar = this.sound.add('roar', { volume: 3 });
             roar.play();
             plataforma.clear(true);
             button.clear(true);
-            
+
             this.time.delayedCall(2500, camerafollow, [], this);
         }
 
         function camerafollow() {
-            
+
             this.sound.stopAll();
-            var celebration = this.sound.add('celebration',{volume: 2});
+            var celebration = this.sound.add('celebration', { volume: 2 });
             celebration.play();
             this.cameras.main.startFollow(player);
 
         }
 
-        function muerteO(enemy,player) {
-                if (tamaño == "pequeño") {
-                    player.setVelocityY(-400);
+        function muerteO(enemy, player) {
+            if (tamaño == "pequeño") {
+                player.setVelocityY(-400);
                 mobil = false;
-                var die = this.sound.add('laugh',{volume: 2});
+                var die = this.sound.add('laugh', { volume: 2 });
                 die.play();
                 player.setImmovable(true);
                 this.time.delayedCall(3500, teleport2, [], this);
                 player.setTint(0xff0000);
                 speed1 = 0;
                 gameOver = true;
-                }
-                else {
-                    player.setVelocityY(-400);
-                    player.setScale(0.5);
-                    player.tint = 0xff0000;
-
-                    if (toque == true) {
-                        enemy.setVelocityX(-160);
-                    }
-                    else { enemy.setVelocityX(160) }
-                    toque = !toque;
-                    var down = this.sound.add('powerDown');
-                    down.play();
-
-                    this.time.delayedCall(1000, cambioTamaño, [], this);
-
-                }
             }
-        
+            else {
+                player.setVelocityY(-400);
+                player.setScale(0.5);
+                player.tint = 0xff0000;
+
+                if (toque == true) {
+                    enemy.setVelocityX(-160);
+                }
+                else { enemy.setVelocityX(160) }
+                toque = !toque;
+                var down = this.sound.add('powerDown');
+                down.play();
+
+                this.time.delayedCall(1000, cambioTamaño, [], this);
+
+            }
+        }
+
 
 
 
         function muerteE(enemy, player) {
-                if (tamaño == "pequeño") {
-                    player.setVelocityY(-400);
+            if (tamaño == "pequeño") {
+                player.setVelocityY(-400);
                 mobil = false;
-                var die = this.sound.add('laugh',{volume: 2});
+                var die = this.sound.add('laugh', { volume: 2 });
                 die.play();
                 player.setImmovable(true);
                 this.time.delayedCall(3500, teleport2, [], this);
@@ -451,20 +456,20 @@
                 player.setTint(0xff0000);
                 speed1 = 0;
                 gameOver = true;
-                }
-                else {
-                    player.setVelocityY(-400);
-                    player.setScale(0.5);
-                    player.tint = 0xff0000;
-                    var down = this.sound.add('powerDown');
-                    down.play();
-
-                    this.time.delayedCall(1000, cambioTamaño, [], this);
-
-                }
             }
+            else {
+                player.setVelocityY(-400);
+                player.setScale(0.5);
+                player.tint = 0xff0000;
+                var down = this.sound.add('powerDown');
+                down.play();
 
-            function teleport2() {
+                this.time.delayedCall(1000, cambioTamaño, [], this);
+
+            }
+        }
+
+        function teleport2() {
             window.location.href = "/Level4.html"
         }
 

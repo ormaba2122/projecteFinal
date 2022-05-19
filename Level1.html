@@ -19,7 +19,7 @@
         var config = {
             type: Phaser.AUTO,
             width: 1300,
-            height: 600,
+            height: 750,
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -52,12 +52,10 @@
         function preload() {
             this.load.image('sky', 'assets/sky.png');
             this.load.image('arbusto', 'assets/arbusto.png');
-
             this.load.image('nube', 'assets/nube.png');
             this.load.image('ground', 'assets/ground.png');
             this.load.image('defaultBrick', 'assets/brick.png');
             this.load.image('bloqueduro', 'assets/bloqueduro.png');
-
             this.load.image('itemBrick', 'assets/itemBlock.png');
             this.load.image('goombaCabeza', 'assets/goomba_cabeza.png');
             this.load.image('bullet', 'assets/bulletbill.png');
@@ -69,7 +67,6 @@
             this.load.spritesheet('goomba', 'assets/goomba.png', { frameWidth: 200, frameHeight: 160 });
             this.load.spritesheet('player', 'assets/mariosprite.png', { frameWidth: 64.185, frameHeight: 100 });
             this.load.image('seta', 'assets/seta.png');
-
             this.load.audio('theme', ['assets/level1.mp3']);
             this.load.audio('jump', ['assets/jump.mp3']);
             this.load.audio('powerUp', ['assets/powerUp.mp3']);
@@ -130,6 +127,8 @@
             for (let i = 0; i < 134; i++) {
                 platforms.create(i * 30, 585, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i * 30, 618, 'ground').setScale(0.2).refreshBody();
+                platforms.create(i * 30, 653, 'ground').setScale(0.2).refreshBody();
+                platforms.create(i * 30, 690, 'ground').setScale(0.2).refreshBody();
 
             };
 
@@ -241,7 +240,7 @@
             });
 
 
-            this.cameras.main.setBounds(0, 25, 4000, 600);
+            this.cameras.main.setBounds(0, -100, 4000, 600);
 
             this.cameras.main.startFollow(player);
             this.cameras.main.setZoom(1);
