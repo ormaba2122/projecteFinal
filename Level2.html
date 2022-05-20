@@ -15,7 +15,7 @@
 <body>
 
     <script type="text/javascript">
-
+        //Configuració general del nivell
         var config = {
             type: Phaser.AUTO,
             width: 1300,
@@ -48,6 +48,7 @@
         var game = new Phaser.Game(config);
 
         function preload() {
+            //Carreguem totes les imatges i sprites
             this.load.image('sky', 'assets/sky2.png');
             this.load.image('piramide', 'assets/piramide.png');
             this.load.image('nube', 'assets/nube.png');
@@ -81,6 +82,7 @@
         function create() {
 
             partida = 1;
+            //Creació de grups els quals els hi apliquem fisiques
             nubes = this.physics.add.staticGroup();
             bullet = this.physics.add.staticGroup();
             platforms = this.physics.add.staticGroup();
@@ -94,23 +96,19 @@
             setaDropper = this.physics.add.staticGroup();
             cactus = this.physics.add.staticGroup();
             
+            //Creació de tot el nivell(plataformes,enemics...)            
             for (let i = 0; i < 20; i++) {
                 this.add.image(i * 400, 400, 'sky');
                 this.add.image(i * 400, 50, 'sky');
             };
             this.add.image(2000, 500, 'sky');
-
             this.add.image(3600, 500, 'sky');
             this.add.image(200, 500, 'piramide');
             this.add.image(400, 500, 'piramide').setScale(2);
-
             this.add.image(1200, 500, 'piramide').setScale(2);
             this.add.image(1400, 500, 'piramide');
-            
-
             this.add.image(3200, 500, 'piramide').setScale(3);
             this.add.image(3400, 500, 'piramide').setScale(2);
-
             nubes.create(800, 200, 'nube').setScale(1).refreshBody();
             nubes.create(1300, 250, 'nube').setScale(1).refreshBody();
             nubes.create(400, 150, 'nube').setScale(1).refreshBody();
@@ -123,99 +121,62 @@
             cactus.create(1200, 520, 'cactus').setScale(0.3).refreshBody();
             cactus.create(2400, 520, 'cactus').setScale(0.3).refreshBody();
             tuberia.create(3700, 550, 'tuberia').setScale(0.3).refreshBody();
-            
             tuberia.create(1750, 540, 'tuberia').setScale(0.3).refreshBody();
-
             tp.create(4000, 500, 'a').setScale(1.5).refreshBody();
-
-
-
             sD1 = setaDropper.create(1090, 289, 'a').setScale(0.5).refreshBody();
-
-    
             for (let i = 0; i < 61; i++) {
                 platforms.create(i * 30, 585, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i * 30, 618, 'ground').setScale(0.2).refreshBody();
-
             };
-
             for (let i = 0; i < 5; i++) {
                 this.add.image(i*100 +1910, 500, 'cadenas').setScale(0.7);
                 platforms.create(i*100 + 1900, 585, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i*100 + 1900, 618, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i*100 + 1900, 340, 'ground').setScale(0.2).refreshBody();
-
             };
             spikes.create(1900, 560, 'spike').setScale(0.038).refreshBody();
             spikes.create(2000, 315, 'spike').setScale(0.038).refreshBody();
             spikes.create(2100, 560, 'spike').setScale(0.038).refreshBody();
             spikes.create(2200, 315, 'spike').setScale(0.038).refreshBody();
             spikes.create(2300, 560, 'spike').setScale(0.038).refreshBody();
-
-
-            
-
-
             for (let i = 0; i < 6; i++) {
                 tp2.create(i*100 + 1850, 720, 'a').setScale(1.5).refreshBody();
             };
-
             platforms.create(2400, 585, 'ground').setScale(0.2).refreshBody();   
             platforms.create(2400, 618, 'ground').setScale(0.2).refreshBody();           
-        
-
             for (let i = 80; i < 134; i++) {
                 platforms.create(i * 30, 585, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i * 30, 618, 'ground').setScale(0.2).refreshBody();
 
             };
-
             platforms.create(1000, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1030, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1060, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1090, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1090, 280, 'itemBrick').setScale(0.2).refreshBody();
             platforms.create(1120, 450, 'defaultBrick').setScale(0.2).refreshBody();
-
-
             platforms.create(1300, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1330, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1360, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1390, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1420, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1450, 400, 'defaultBrick').setScale(0.2).refreshBody();
-
-            
-
-
-
-
-            
             for (let i = 3940; i < 4000; i++) {
                 platforms.create(i, 475, 'a').setScale(0.2).refreshBody();
             };
-
-
             player = this.physics.add.sprite(300, 500, 'player').setScale(0.5);
             koopa1 = this.physics.add.sprite(3000, 400, 'koopa').setScale(0.5);
-           // planta1 = this.physics.add.sprite(400, 300, 'overlapplanta').setScale(0.5);
             goomba2 = this.physics.add.sprite(1400, 350, 'goomba').setScale(0.22);
             goomba1 = this.physics.add.sprite(1550, 350, 'goomba').setScale(0.22);
-
-            
-
-    
-
             this.add.image(3980, 520, 'tuberiaTP').setScale(0.4);
-
             g1coll = this.physics.add.collider(goomba1, platforms);
             g2coll = this.physics.add.collider(goomba2, platforms);
+
+            //Declarem les colisions
             this.physics.add.collider(koopa1, platforms);
             this.physics.add.collider(player, platforms);
-            //this.physics.add.collider(planta1, platforms);
             this.physics.add.collider(setas, platforms);
             this.physics.add.collider(player, tuberia);
-            //this.physics.add.collider( planta1,player, muerteE, null, this);
             this.physics.add.collider(koopa1, player, muerteK, null, this);
             this.physics.add.collider(fuegos, player, muerteS, null, this);
             this.physics.add.collider(goomba1, player, muerteE, null, this);
@@ -231,25 +192,19 @@
             this.physics.add.collider(player, tp2, muerteC, null, this);
             this.physics.add.collider(fuegos, platforms);
             this.physics.add.collider(fuegos, tuberia, rebote, null, this);
+
             goomba1.setVelocityX(160);
             goomba2.setVelocityX(-160);
             cursors = this.input.keyboard.createCursorKeys();
-
-
             speed1 = 0;
             speed2 = Phaser.Math.GetSpeed(-900, 6);
-
-
             this.time.delayedCall(2500, goombasprint, [], this);
             this.time.delayedCall(1500, tiraFuego, [], this);
-
-
-
             this.physics.world.setBounds(0, 0, 4000, 900);
             player.body.collideWorldBounds = true;
 
             
-
+            //Creació de les animacions dels sprites
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
@@ -283,7 +238,6 @@
                 key: 'right',
                 frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
                 frameRate: 10,
-                //repeat: 1
             });
 
             this.anims.create({
@@ -297,20 +251,18 @@
                 frameRate: 10
             });
 
-
+            //Configuració de la camara
             this.cameras.main.setBounds(0, -100, 4000, 600);
-
             this.cameras.main.startFollow(player);
             this.cameras.main.setZoom(1);
 
+            //Inicia la música
             var music = this.sound.add('theme');
-
              music.play();
 
             
-
-        function muerteC(player,enemy ) {
-
+            //Funcions per quan el jugador colisiona amb un enemic
+          function muerteC(player,enemy ) {
             if (tamaño == "pequeño") {
                 music.stop();
                 player.setVelocityY(-500);
@@ -336,8 +288,6 @@
             }
         }
 
-        
-
         function muerteE(enemy, player) {
           if(  player.body.velocity.y > 0 || enemy.body.blocked.up){
             player.setVelocityY(-400);
@@ -357,25 +307,20 @@
                     player.setImmovable(true);
                     gameOver = true;
                     this.time.delayedCall(3500, teleport2, [], this);
-            }
-            else {
+            }else {
                 player.setVelocityY(-400);
                 player.setScale(0.5);
                 player.tint = 0xff0000;
-
                 if (toque == true) {
                     enemy.setVelocityX(-160);
-                }
-                else { enemy.setVelocityX(160) }
+                }else { enemy.setVelocityX(160) }
                 toque = !toque;
                 var down = this.sound.add('powerDown');
                     down.play();
-
                 this.time.delayedCall(1000, cambioTamaño, [], this);
-
-            }}
+            }
         }
-
+    }
         function muerteK(enemy, player,delta) {
           if(  player.body.velocity.y > 0 || enemy.body.blocked.up){
             player.setVelocityY(-400);
@@ -404,16 +349,12 @@
                 }
                 else { enemy.setVelocityX(160) }
                 toque = !toque;
-
                 var down = this.sound.add('powerDown');
-                    down.play();
-
+                down.play();
                 this.time.delayedCall(1000, cambioTamaño, [], this);
 
             }}
         }
-
-
         function muerteS(player,enemy){
             if (tamaño == "pequeño") {
                 player.setVelocityY(-400);
@@ -449,7 +390,7 @@
 
         function update(time, delta) {
 
-
+            //Patrons de moviment del enemics
             if (koopa1.x < player.x && player.x>2500 && koopa1.x!=player.x+10) {
                 koopa1.setVelocityX(100);
                 direccion = "derecha";
@@ -466,7 +407,7 @@
 
             }
             
-
+            //Condicions perque el Mario es mogui
             if (cursors.left.isDown) {
                 if(mobil == true){
                 player.setVelocityX(-160);
@@ -494,6 +435,7 @@
             }
         }
 
+        //Funció  perqué el goomba reboti a la tuberia
         function rebote(goomba, tuberia) {
             if (toque == true) {
                 goomba.setVelocityX(-160);
@@ -501,6 +443,8 @@
             else { goomba.setVelocityX(160) }
             toque = !toque;
         }
+
+        //Funció que fa als goombas incrementar la seva velocitat
         function goombasprint() {
             goomba1.setVelocityX(-400);
             goomba2.setVelocityX(-400);
@@ -509,16 +453,17 @@
             this.time.delayedCall(500, goombanormal, [], this);
 
         }
-
+        ç
+        //Funció que fa que els goombas tornin a la velocitat normal
         function goombanormal() {
             goomba1.setVelocityX(-160);
             goomba2.setVelocityX(-160);
             goomba1.clearTint(true);
             goomba2.clearTint(true);
             this.time.delayedCall(500, goombasprint, [], this);
-
         }
 
+        //Funció perquè Mario es faci gran
         function powerUp(player, seta) {
             if (tamaño == "pequeño") {
                 player.setVelocityY(-200);
@@ -530,6 +475,8 @@
             setas.clear(true);
 
         }
+
+        //Funció que permet que la tortuga llenci boles de foc
         function tiraFuego() {
             fuego = fuegos.create(koopa1.x, 500, 'fuego').setScale(0.03);
             if(direccion=="izquierda"){
@@ -538,11 +485,10 @@
                 fuego.setVelocityX(750);
             }
             fuego.setImmovable(true);
-
-            
             this.time.delayedCall(1500, tiraFuego, [], this);
-            
         }
+
+        //Funció que permet al bloc deixar anar un champinyó
         function soltarSeta() {
             if (setaD == false) {
                 seta = setas.create(1090, 200, 'seta').setScale(0.15);
@@ -550,15 +496,16 @@
                 platforms.create(1090, 280, 'bloqueduro').setScale(0.2).refreshBody();
                 setaD = true;
             }
-
-
         }
+
+        //Funcio que treu la vulnerabilitat al mario
         function cambioTamaño() {
             tamaño = "pequeño";
             player.clearTint(true);
         }
         
 
+        //Funcions per pasar al seguent nivell
         function nextLvl() {
             this.physics.pause();
             var down = this.sound.add('powerDown');
@@ -568,6 +515,8 @@
         function teleport() {
             window.location.href = "/Level3.html"
         }
+
+        //Funció que et torna al inici del nivell quan mors
         function teleport2() {
             window.location.href = "/Level2.html"
         }

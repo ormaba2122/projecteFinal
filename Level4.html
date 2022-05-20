@@ -15,7 +15,7 @@
 <body>
 
     <script type="text/javascript">
-
+        //Configuració general del nivell
         var config = {
             type: Phaser.AUTO,
             width: 1300,
@@ -49,6 +49,7 @@
         var game = new Phaser.Game(config);
 
         function preload() {
+            //Carreguem totes les imatges i sprites
             this.load.image('sky', 'assets/sky_final.png');
             this.load.image('lava', 'assets/lava.png');
             this.load.image('bloqueduro', 'assets/bloqueduro_iron.png');
@@ -59,7 +60,6 @@
             this.load.image('fuego', 'assets/fireball.png');
             this.load.image('button', 'assets/button.png');
             this.load.image('thanks', 'assets/thanks.png');
-
             this.load.spritesheet('bowser', 'assets/bowser.png', { frameWidth: 500, frameHeight: 500 });
             this.load.spritesheet('bowser2', 'assets/bowser2.png', { frameWidth: 500, frameHeight: 500 });
             this.load.spritesheet('bowser3', 'assets/bowser3.png', { frameWidth: 500, frameHeight: 500 });
@@ -76,28 +76,23 @@
         function create() {
 
             partida = 1;
-
-            this.add.image(400, 350, 'sky').setScale(10);
-
-            this.add.image(600, 200, 'skull').setScale(0.4);
-
+            
+            //Creació de grups els quals els hi apliquem fisiques
             block = this.physics.add.staticGroup();
             plataforma = this.physics.add.staticGroup();
-
             lava = this.physics.add.staticGroup();
             button = this.physics.add.staticGroup();
-
             fire = this.physics.add.group();
 
+            //Creació de tot el nivell(plataformes,enemics...)
+            this.add.image(400, 350, 'sky').setScale(10);
+            this.add.image(600, 200, 'skull').setScale(0.4);
             this.add.image(2000, 300, 'thanks').setScale(1);
-
             bowser2 = this.physics.add.sprite(1400, 600, 'bowser2').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
             bowser3 = this.physics.add.sprite(1400, 600, 'bowser3').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
-
             this.load.image('cadenas', 'assets/cadenas.png');
             this.add.image(240, 250, 'cadenas').setScale(1);
             this.add.image(960, 250, 'cadenas').setScale(1);
-
             for (let i = 0; i < 40; i++) {
                 block.create(0, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
             }
@@ -108,33 +103,23 @@
                 block.create(1200, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
                 block.create(1245, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
                 block.create(1290, i * 45, 'bloqueduro').setScale(0.3).refreshBody();
-
             }
-
             button.create(1200, 405, 'bloqueduro').setScale(0.3).refreshBody();
             button.create(1200, 450, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1200, 495, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1245, 495, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1290, 495, 'bloqueduro').setScale(0.3).refreshBody();
-
             for (let i = 27; i < 60; i++) {
                 block.create(i * 45, 550, 'gold').setScale(0.3).refreshBody();
             }
-
-
             for (let i = 5; i < 22; i++) {
                 plataforma.create(i * 45, 500, 'bloqueduro').setScale(0.3).refreshBody();
             }
-
-
             player = this.physics.add.sprite(400, 0, 'player').setScale(0.7);
             bowser = this.physics.add.sprite(900, 400, 'bowser').setInteractive(this.input.makePixelPerfect()).setScale(0.17);
             var roar = this.sound.add('roar', { volume: 2 });
             roar.play();
-
             bowser.setVelocityX(-150);
-
-
             lava.create(890, 750, 'lava').setScale(1).refreshBody();
             lava.create(1200, 750, 'lava').setScale(1).refreshBody();
             lava.create(1760, 750, 'lava').setScale(1).refreshBody();
@@ -154,11 +139,11 @@
             block.create(1290, 540, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1290, 585, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(1290, 630, 'bloqueduro').setScale(0.3).refreshBody();
-
             block.create(0, 540, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(0, 585, 'bloqueduro').setScale(0.3).refreshBody();
             block.create(0, 630, 'bloqueduro').setScale(0.3).refreshBody();
 
+            //Declarem les colisions
             this.physics.add.collider(player, plataforma);
             this.physics.add.collider(player, block);
             this.physics.add.collider(bowser, plataforma);
@@ -169,32 +154,28 @@
             cursors = this.input.keyboard.createCursorKeys();
             this.physics.world.setBounds(0, 0, 4000, 900);
             player.body.collideWorldBounds = true;
-
             this.time.delayedCall(1000, bowserJump, [], this);
 
+            
+            //Creació de les animacions dels sprites
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
                 frameRate: 10,
                 repeat: 0
             });
-
-
             this.anims.create({
                 key: 'turn',
                 frames: [{ key: 'player', frame: 6 }],
                 frameRate: 10
             });
-
             player.anims.play('turn');
-
             this.anims.create({
                 key: 'right',
                 frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
                 frameRate: 10,
                 //repeat: 1
             });
-
             this.anims.create({
                 key: 'B2Right',
                 frames: [{ key: 'bowser2', frame: 1 }],
@@ -211,22 +192,16 @@
                 frameRate: 10
             });
 
-
-
+            //Configuració de la camara
             this.cameras.main.setBounds(0, 0, 4000, 600);
-
             this.cameras.main.setZoom(1);
-
-
-
-
-
         }
 
         function update(time, delta) {
+            //Patrons de moviment del enemics
+
             if (bowser.x > 897) {
                 var music = this.sound.add('theme');
-
                 music.play();
             }
             if (bowser.y > 5000) {
@@ -304,7 +279,6 @@
                 bowser3.anims.play('B3Right');
                 bowser3.setVelocityX(300);
                 direccion3 = "derecha"
-
             }
             if (bowser3.x > 1000) {
                 bowser3.anims.play('B3Left');
@@ -312,6 +286,7 @@
                 direccion3 = "izquierda"
             }
 
+            //Condicions perque el Mario es mogui
             if (cursors.left.isDown) {
                 if (mobil == true) {
                     player.setVelocityX(-160);
@@ -340,24 +315,27 @@
                 }
             }
         }
-
+        //Funció per treure la vulnerabilitat al jugador quan un enemic el fa petit
         function cambioTamaño() {
             tamaño = "pequeño";
             player.clearTint(true);
         }
 
+        //Funció perque el bowser de la fase 1 fagi salts
         function bowserJump() {
             bowser.setVelocityY(-400);
             this.time.delayedCall(3000, bowserJump, [], this);
         }
 
+        //Funció que crea el botó i la plataforma per matar al bowser
         function killButton() {
             button.create(1150, 470, 'button').setScale(0.15).refreshBody();
             block.create(1150, 495, 'bloqueduro').setScale(0.3).refreshBody();
-
             this.physics.add.collider(player, button, killBowser, null, this);
 
         }
+
+        //Funcions que fa que el bowser de la segona fase fagi sprints
         function bowserSprint() {
             if (direccion == "izquierda") {
                 bowser2.setVelocityX(-500);
@@ -366,7 +344,6 @@
                 bowser2.setVelocityX(500);
             }
             this.time.delayedCall(1000, bowserNormal, [], this);
-
         }
         function bowserNormal() {
             if (direccion == "izquierda") {
@@ -378,6 +355,7 @@
             this.time.delayedCall(500, bowserSprint, [], this);
         }
 
+        //Funció que fa que el bowser de la tercera fase tiri foc
         function bowserFire() {
             fuego = fire.create(bowser3.x, bowser3.y - 50, 'fuego').setScale(0.03);
             this.physics.add.collider(fuego, plataforma);
@@ -393,6 +371,7 @@
 
         }
 
+        //Funció que fa desapareixer els blocs de la plataforma central
         function killBowser() {
             var roar = this.sound.add('roar', { volume: 3 });
             roar.play();
@@ -402,8 +381,8 @@
             this.time.delayedCall(2500, camerafollow, [], this);
         }
 
+        //Funció perquè la camera et segueixi quan matis al bowser
         function camerafollow() {
-
             this.sound.stopAll();
             var celebration = this.sound.add('celebration', { volume: 2 });
             celebration.play();
@@ -411,6 +390,7 @@
 
         }
 
+        //Funcions per matar al jugador
         function muerteO(enemy, player) {
             if (tamaño == "pequeño") {
                 player.setVelocityY(-400);
@@ -440,8 +420,6 @@
 
             }
         }
-
-
         function muerteE(enemy, player) {
             if (tamaño == "pequeño") {
                 player.setVelocityY(-400);
@@ -467,6 +445,7 @@
             }
         }
 
+        //Funció per si mors tornis a començar el nivell
         function teleport2() {
             window.location.href = "/Level4.html"
         }

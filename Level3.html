@@ -15,7 +15,7 @@
 <body>
 
     <script type="text/javascript">
-
+        //Configuració general del nivell
         var config = {
             type: Phaser.AUTO,
             width: 1300,
@@ -48,6 +48,7 @@
         var game = new Phaser.Game(config);
 
         function preload() {
+            //Carreguem totes les imatges i sprites
             this.load.image('sky', 'assets/sky3.png');
             this.load.image('piramide', 'assets/piramide.png');
             this.load.image('nube', 'assets/nube.png');
@@ -82,13 +83,14 @@
         function create() {
 
             partida = 1;
+            
+            //Creació de grups els quals els hi apliquem fisiques
             nubes = this.physics.add.staticGroup();
             bullet = this.physics.add.staticGroup();
             platforms = this.physics.add.staticGroup();
             mushroombrick = this.physics.add.staticGroup();
             tuberia = this.physics.add.staticGroup();
             caparazones = this.physics.add.group();
-
             tp = this.physics.add.staticGroup();
             tp2 = this.physics.add.staticGroup();
             spikes = this.physics.add.staticGroup();
@@ -98,6 +100,8 @@
             setaDropper = this.physics.add.staticGroup();
             cactus = this.physics.add.staticGroup();
             bouncer = this.physics.add.staticGroup();
+
+            //Creació de tot el nivell(plataformes,enemics...)
             this.add.image(600, 300, 'sky').setScale(2.7);
             tuberia.create(1700, 540, 'tuberia').setScale(0.3).refreshBody();
             tp.create(4000, 500, 'a').setScale(1.5).refreshBody();
@@ -105,7 +109,6 @@
             for (let i = 0; i < 61; i++) {
                 tp2.create(i * 30, 785, 'a').setScale(0.5).refreshBody();
             };
-
             bouncer.create(2000, 575, 'bouncer').setScale(0.4).refreshBody();
             bouncer.create(2400, 575, 'bouncer').setScale(0.4).refreshBody();
             bouncer.create(2800, 575, 'bouncer').setScale(0.4).refreshBody();
@@ -114,12 +117,10 @@
             for (let i = 0; i < 60; i++) {
                 tp2.create(i * 50 + 1850, 720, 'a').setScale(1.5).refreshBody();
             };
-
             platforms.create(4000, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3970, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3940, 585, 'bloqueduro').setScale(0.2).refreshBody();
             platforms.create(3910, 585, 'bloqueduro').setScale(0.2).refreshBody();
-
             platforms.create(1100, 450, 'n_plat').setScale(0.4).refreshBody();
             platforms.create(1130, 450, 'n_plat').setScale(0.4).refreshBody();
             platforms.create(1160, 450, 'n_plat').setScale(0.4).refreshBody();
@@ -128,31 +129,26 @@
             platforms.create(1220, 450, 'n_plat').setScale(0.4).refreshBody();
             platforms.create(1250, 450, 'n_plat').setScale(0.4).refreshBody();
             platforms.create(1280, 450, 'n_plat').setScale(0.4).refreshBody();
-
-
             platforms.create(100, 600, 'n_plat').setScale(1).refreshBody();
             platforms.create(300, 500, 'n_plat').setScale(1).refreshBody();
             platforms.create(500, 400, 'n_plat').setScale(0.8).refreshBody();
             platforms.create(700, 400, 'n_plat').setScale(0.8).refreshBody();
             platforms.create(900, 400, 'n_plat').setScale(0.8).refreshBody();
             platforms.create(1450, 300, 'n_plat').setScale(0.8).refreshBody();
-
             platforms.create(1480, 600, 'defaultBrick').setScale(0.2).refreshBody();
-
             for (let i = 3940; i < 4000; i++) {
                 tp2.create(i, 475, 'a').setScale(0.2).refreshBody();
             };
-
             player = this.physics.add.sprite(100, 0, 'player').setScale(0.5);
-            // planta1 = this.physics.add.sprite(400, 300, 'planta').setScale(0.5);
             goomba2 = this.physics.add.sprite(40000, 250, 'goomba').setScale(0.22);
             goomba1 = this.physics.add.sprite(600, 250, 'goomba').setScale(0.22);
             koopa1 = this.physics.add.sprite(3800, 450, 'koopa').setScale(0.5);
             koopa2 = this.physics.add.sprite(1800, 450, 'koopa').setScale(0.5);
             koopa1.setVelocityX(-200);
             koopa2.setVelocityX(-200);
-
             this.add.image(3980, 520, 'tuberiaTP').setScale(0.4);
+
+            //Declarem les colisions
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(goomba1, platforms);
             this.physics.add.collider(goomba2, platforms);
@@ -172,19 +168,14 @@
             this.physics.add.collider(bouncer, player, bounce, null, this);
 
             goomba1.setVelocityX(-100);
-            //goomba2.setVelocityX(-160);
             cursors = this.input.keyboard.createCursorKeys();
-
-
             speed1 = 0;
             speed2 = Phaser.Math.GetSpeed(-900, 6);
-
-
             this.physics.world.setBounds(0, 0, 4000, 900);
             player.body.collideWorldBounds = true;
 
 
-
+            //Creació de les animacions dels sprites
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
@@ -199,28 +190,23 @@
             });
             goomba1.anims.play('goomba');
             goomba2.anims.play('goomba');
-
             this.anims.create({
                 key: 'koopa',
                 frames: [{ key: 'koopa', frame: 1 }],
                 frameRate: 10,
             });
-
             this.anims.create({
                 key: 'turn',
                 frames: [{ key: 'player', frame: 6 }],
                 frameRate: 10
             });
-
             player.anims.play('turn');
-
             this.anims.create({
                 key: 'right',
                 frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
                 frameRate: 10,
                 //repeat: 1
             });
-
             this.anims.create({
                 key: 'KRight',
                 frames: [{ key: 'koopa', frame: 1 }],
@@ -232,17 +218,18 @@
                 frameRate: 10
             });
 
-
+            //Configuració de la camara
             this.cameras.main.setBounds(0, -100, 4000, 600);
-
             this.cameras.main.startFollow(player);
             this.cameras.main.setZoom(1);
 
+            //Inicia la música
             var music = this.sound.add('theme');
+            music.play();
 
-             music.play();
-
-             function muerteO(player, enemy) {
+        
+        //Funcions per quan el jugador colisiona amb un enemic
+        function muerteO(player, enemy) {
             if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
                 enemy.setVelocityX(0);
                 player.setVelocityY(-400);
@@ -288,13 +275,11 @@
                 this.physics.pause();
                 mobil = false;
                 music.stop();
-
                 var die = this.sound.add('marioDie');
                 die.play();
                 player.setImmovable(true);
                 this.physics.pause();
                 this.time.delayedCall(3500, teleport2, [], this);
-
                 player.setTint(0xff0000);
                 speed1 = 0;
                 gameOver = true;
@@ -304,17 +289,12 @@
                 player.x = player.x - 200;
                 player.setScale(0.5);
                 player.tint = 0xff0000;
-
                 var down = this.sound.add('powerDown');
-                    down.play();
-
+                down.play();
                 this.time.delayedCall(1000, cambioTamaño, [], this);
 
             }
         }
-
-
-
         function muerteE(enemy, player) {
             if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
                 player.setVelocityY(-600);
@@ -340,7 +320,6 @@
                     player.setVelocityY(-400);
                     player.setScale(0.5);
                     player.tint = 0xff0000;
-
                     if (toque == true) {
                         enemy.setVelocityX(-160);
                     }
@@ -380,10 +359,6 @@
                     player.setVelocityY(-400);
                     player.setScale(0.5);
                     player.tint = 0xff0000;
-
-
-
-
                     if (toque == true) {
                         enemy.setVelocityX(-160);
                     }
@@ -399,7 +374,8 @@
         }
 
         function update(time, delta) {
-
+            
+            //Patrons de moviment del enemics
             if (goomba1.y > 320) {
                 goomba1.setVelocityY(-600);
             }
@@ -438,7 +414,7 @@
                 tiracaparazon2();
             }
 
-
+            //Condicions perque el Mario es mogui
             if (cursors.left.isDown) {
                 if(mobil == true){
                 player.setVelocityX(-160);
@@ -457,7 +433,6 @@
                 player.anims.play('turn');
 
             }
-
             if (cursors.up.isDown && player.body.touching.down) {
                 if(mobil == true){
                 player.setVelocityY(-560);
@@ -465,7 +440,7 @@
                 jump.play();}
             }
         }
-
+        //Funció  perqué el goomba reboti a la tuberia
         function rebote(goomba, tuberia) {
             if (toque == true) {
                 goomba.setVelocityX(-160);
@@ -473,6 +448,7 @@
             else { goomba.setVelocityX(160) }
             toque = !toque;
         }
+    //Funció que fa als goombas volar
         function goombafly() {
             goomba1.setVelocityX(-400);
             goomba2.setVelocityX(-400);
@@ -483,19 +459,20 @@
             this.time.delayedCall(200, goombafly, [], this);
 
         }
-
+        
+        //Funció per que la tortuga1 llenci una closca
         function tiracaparazon1() {
-
             capa = caparazones.create(koopa1.x, 500, 'caparazon').setScale(0.5);
             capa.setVelocityY(-1000);
         }
-        function tiracaparazon2() {
 
+        //Funció per que la tortuga2 llenci una closca
+        function tiracaparazon2() {
             capa = caparazones.create(koopa2.x, 500, 'caparazon').setScale(0.5);
             capa.setVelocityY(-1000);
-
-
         }
+
+        //Funció per que Mario es fagi gran
         function powerUp(player, seta) {
             if (tamaño == "pequeño") {
                 player.setVelocityY(-200);
@@ -507,7 +484,7 @@
             setas.clear(true);
 
         }
-
+        //Funció que fa que les plataformes xampinyó fagin rebotar al jugador
         function bounce() {
             player.setVelocityY(-600);
             var boing = this.sound.add('boing');
@@ -515,6 +492,7 @@
 
         }
 
+        //Funció per que el bloc quan saltas deixi anar un champinyó
         function soltarSeta() {
             if (setaD == false) {
                 seta = setas.create(1200, 200, 'seta').setScale(0.15);
@@ -527,18 +505,21 @@
 
 
         }
+
+        //Funció per treure la vulnerabilitat al jugador quan un enemic el fa petit
         function cambioTamaño() {
             tamaño = "pequeño";
             player.clearTint(true);
         }
 
+        //Funció que fa saltar a les tortugues
         function koopaJump() {
             koopa1.setVelocityY(-600);
             this.time.delayedCall(2000, koopaJump, [], this);
 
         }
         
-
+    //Funcións per transportarte al seguent nivell
         function nextLvl() {
             this.physics.pause();
             var down = this.sound.add('powerDown');
@@ -548,6 +529,8 @@
         function teleport() {
             window.location.href = "/Level4.html"
         }
+
+        //Funció per si mors tornis a començar el nivell
         function teleport2() {
             window.location.href = "/Level3.html"
         }

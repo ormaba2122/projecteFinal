@@ -13,9 +13,9 @@
 </head>
 
 <body>
-
+    
     <script type="text/javascript">
-
+        //Configuració general del nivell
         var config = {
             type: Phaser.AUTO,
             width: 1300,
@@ -50,6 +50,7 @@
         var game = new Phaser.Game(config);
 
         function preload() {
+            //Carreguem totes les imatges i sprites
             this.load.image('sky', 'assets/sky.png');
             this.load.image('arbusto', 'assets/arbusto.png');
             this.load.image('nube', 'assets/nube.png');
@@ -77,10 +78,8 @@
         }
 
         function create() {
-
-
-
             partida = 1;
+            //Creació de grups els quals els hi apliquem fisiques
             nubes = this.physics.add.staticGroup();
             bullet = this.physics.add.staticGroup();
             platforms = this.physics.add.staticGroup();
@@ -93,6 +92,7 @@
             setaDropper = this.physics.add.staticGroup();
             cabeza = this.physics.add.staticGroup();
 
+            //Creació de tot el nivell(plataformes,enemics...)
             for (let i = 0; i < 20; i++) {
                 this.add.image(i * 400, 400, 'sky').setScale(2);
                 this.add.image(i * 400, 50, 'sky');
@@ -102,9 +102,6 @@
             this.add.image(1500, 570, 'arbusto').setScale(1);
             this.add.image(3750, 570, 'arbusto').setScale(1);
             this.add.image(600, 570, 'arbusto').setScale(0.6);
-
-
-
             nubes.create(800, 200, 'nube').setScale(1.2).refreshBody();
             nubes.create(1300, 250, 'nube').setScale(1).refreshBody();
             nubes.create(400, 150, 'nube').setScale(0.8).refreshBody();
@@ -113,17 +110,12 @@
             nubes.create(270, 230, 'nube').setScale(1.5).refreshBody();
             nubes.create(2000, 150, 'nube').setScale(1).refreshBody();
             nubes.create(3200, 150, 'nube').setScale(1.5).refreshBody();
-
             tuberia.create(1800, 550, 'tuberia').setScale(0.3).refreshBody();
             tuberia.create(2030, 470, 'tuberia').setScale(0.3).refreshBody();
             tuberia.create(2400, 550, 'tuberia').setScale(0.3).refreshBody();
             tuberia.create(3700, 550, 'tuberia').setScale(0.3).refreshBody();
-
             tp.create(4000, 500, 'a').setScale(1.5).refreshBody();
-
             sD1 = setaDropper.create(1030, 460, 'a').setScale(0.5).refreshBody();
-
-
             for (let i = 0; i < 134; i++) {
                 platforms.create(i * 30, 585, 'ground').setScale(0.2).refreshBody();
                 platforms.create(i * 30, 618, 'ground').setScale(0.2).refreshBody();
@@ -131,35 +123,29 @@
                 platforms.create(i * 30, 690, 'ground').setScale(0.2).refreshBody();
 
             };
-
             platforms.create(1000, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1030, 450, 'itemBrick').setScale(0.2).refreshBody();
             platforms.create(1060, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1090, 450, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1120, 450, 'defaultBrick').setScale(0.2).refreshBody();
-
-
             platforms.create(1300, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1330, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1360, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1390, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1420, 400, 'defaultBrick').setScale(0.2).refreshBody();
             platforms.create(1450, 400, 'defaultBrick').setScale(0.2).refreshBody();
-
             for (let i = 3940; i < 4000; i++) {
                 platforms.create(i, 475, 'a').setScale(0.2).refreshBody();
             };
-
-
             player = this.physics.add.sprite(300, 500, 'player').setScale(0.5);
             koopa1 = this.physics.add.sprite(3000, 500, 'koopa').setScale(0.5);
             goomba2 = this.physics.add.sprite(2200, 350, 'goomba').setScale(0.22);
             goomba1 = this.physics.add.sprite(1750, 350, 'goomba').setScale(0.22);
-
             this.add.image(3980, 520, 'tuberiaTP').setScale(0.4);
 
-            g1coll = this.physics.add.collider(goomba1, platforms);
-            g2coll = this.physics.add.collider(goomba2, platforms);
+            //Declarem les colisions
+            this.physics.add.collider(goomba2, platforms);
+            this.physics.add.collider(goomba1, platforms);
             this.physics.add.collider(koopa1, platforms);
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(setas, platforms);
@@ -181,17 +167,13 @@
             goomba1.setVelocityX(-160);
             goomba2.setVelocityX(160);
             cursors = this.input.keyboard.createCursorKeys();
-
-
             speed1 = Phaser.Math.GetSpeed(-600, 6);
-
             this.time.delayedCall(2500, goombasalta, [], this);
-
             this.physics.world.setBounds(0, 0, 4000, 8000);
             player.body.collideWorldBounds = true;
 
 
-
+            //Creació de les animacions dels sprites
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
@@ -225,7 +207,6 @@
                 key: 'right',
                 frames: this.anims.generateFrameNumbers('player', { start: 6, end: 11 }),
                 frameRate: 10,
-                //repeat: 1
             });
 
             this.anims.create({
@@ -239,15 +220,16 @@
                 frameRate: 10
             });
 
-
+            //Configuració de la camara
             this.cameras.main.setBounds(0, -100, 4000, 600);
-
             this.cameras.main.startFollow(player);
             this.cameras.main.setZoom(1);
-            var music = this.sound.add('theme');
 
+            //Inicia la música
+            var music = this.sound.add('theme');
             music.play();
 
+            //Funcions per quan el jugador colisiona amb un enemic
             function Cmuerte(player, enemy) {
             if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
                 enemy.setVelocityX(0);
@@ -255,7 +237,6 @@
                 var kill = this.sound.add('enemyDown');
                 kill.play();
                 enemy.setImmovable(true);
-
             } else {
                 if (tamaño == "pequeño") {
                     player.setVelocityY(-400);
@@ -268,7 +249,6 @@
                     speed1 = 0;
                     gameOver = true;
                     this.time.delayedCall(3500, teleport2, [], this);
-
                 }
                 else {
                     player.setVelocityY(-400);
@@ -276,17 +256,14 @@
                     player.tint = 0xff0000;
                     if (toque == true) {
                         enemy.setVelocityX(-160);
-                    }
-                    else { enemy.setVelocityX(160) }
+                    }else { enemy.setVelocityX(160) }
                     toque = !toque;
                     var down = this.sound.add('powerDown');
                     down.play();
                     this.time.delayedCall(1000, cambioTamaño, [], this);
-
                 }
             }
         }
-
             function muerte(enemy, player) {
             if (player.body.velocity.y > 0 || enemy.body.blocked.up) {
                 player.setVelocityY(-400);
@@ -330,9 +307,8 @@
         }
 
         function update(time, delta) {
-            
-            
 
+            //Patrons de moviment del enemics
             koopa1.x += speed1 * delta;
 
             if (koopa1.x < 2700) {
@@ -347,27 +323,22 @@
 
             }
 
+            //Condicions perque el Mario es mogui
             if (cursors.left.isDown) {
                 if(mobil == true){
                 player.setVelocityX(-160);
                 player.anims.play('left', true);}
-
-
             }
             else if (cursors.right.isDown) {
                 if(mobil == true){
                    player.setVelocityX(160);
                 player.anims.play('right', true); 
                 }
-                
-
             }
             else {
                 player.setVelocityX(0);
                 player.anims.play('turn');
-
             }
-
             if (cursors.up.isDown && player.body.touching.down) {
                 if(mobil == true){
                 player.setVelocityY(-560);
@@ -376,6 +347,7 @@
             }
         }
 
+        //Funció per si un enemic choca amb una tuberia
         function rebote(goomba, tuberia) {
             if (toque == true) {
                 goomba.setVelocityX(-160);
@@ -383,6 +355,7 @@
             else { goomba.setVelocityX(160) }
             toque = !toque;
         }
+        //Funció que fa al goomba saltar
         function goombasalta() {
             goomba1.setVelocityY(-300);
             goomba2.setVelocityY(-300);
@@ -390,6 +363,7 @@
 
         }
 
+        //Funció per que Mario es fagi gran
         function powerUp(player, seta) {
             if (tamaño == "pequeño") {
                 player.setVelocityY(-200);
@@ -401,14 +375,15 @@
             setas.clear(true);
 
         }
+
+        //Funció per que la tortuga llenci una closca
         function tiracaparazon() {
             koopa1.setVelocityY(-400);
-
             capa = caparazones.create(koopa1.x, 500, 'caparazon').setScale(0.5);
             capa.setVelocityX(-250);
-
-
         }
+
+        //Funció per que el bloc quan saltas deixi anar un champinyó
         function soltarSeta() {
             if (setaD == false) {
                 seta = setas.create(1030, 400, 'seta').setScale(0.15);
@@ -419,12 +394,15 @@
 
 
         }
+
+        //Funció per treure la vulnerabilitat al jugador quan un enemic el fa petit
         function cambioTamaño() {
             tamaño = "pequeño";
             player.clearTint(true);
         }
          
 
+        //Funcións per transportarte al seguent nivell
         function nextLvl() {
             this.physics.pause();
             var down = this.sound.add('powerDown');
@@ -434,6 +412,8 @@
         function teleport() {
             window.location.href = "/Level2.html"
         }
+
+        //Funció per si mors tornis a començar el nivell
         function teleport2() {
             window.location.href = "/Level1.html"
         }
